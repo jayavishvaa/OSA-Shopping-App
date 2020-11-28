@@ -1,9 +1,9 @@
-var mongoose = require('mongoose');
-var Schema = mongoose.Schema;
+const mongoose = require('mongoose');
+const Schema = mongoose.Schema;
 
-var passportLocalMongoose = require('passport-local-mongoose');
+const passportLocalMongoose = require('passport-local-mongoose');
 
-var User = new Schema({
+const User = new Schema({
     firstname: {
       type: String,
         default: ''
@@ -14,9 +14,19 @@ var User = new Schema({
     },
     type:   {
         type: String,
-        default: "consumer"
+        lowercase: true,
+        default: "consumer",
+        enum: ['consumer', 'seller', 'admin']
     },
     email: {
+      type: String,
+      default: '',
+      required: true,
+      lowercase: true,
+      unique: true,
+      match: [/^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/, 'Please fill a valid email address']
+    },
+    phone: {
       type: String,
       default: '',
       required: true,

@@ -1,5 +1,6 @@
 const express = require("express");
 const mongoose = require("mongoose");
+const logger = require('morgan');
 const config = require("config");
 const passport = require('passport');
 
@@ -7,6 +8,7 @@ var usersRouter = require('./routes/users');
 
 const app=express();
 
+app.use(logger('dev'));
 app.use(express.json());
 app.use(passport.initialize());
 app.use(passport.session());

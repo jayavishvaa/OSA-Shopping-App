@@ -13,10 +13,12 @@ const User = new Schema({
         default: ''
     },
     type:   {
+      type: [{
         type: String,
         lowercase: true,
-        default: "consumer",
         enum: ['consumer', 'seller', 'admin']
+      }],
+      default: ['consumer']
     },
     email: {
       type: String,

@@ -1,4 +1,5 @@
 {
     "secretKey": "12345-67890-09876-54321",
-    "mongoUrl": "mongodb://localhost:27017/OneStopApp"
+    "mongoUrl": "mongodb://localhost:27017/OneStopApp",
+    "baseUrl": "http://localhost:8000"
 }

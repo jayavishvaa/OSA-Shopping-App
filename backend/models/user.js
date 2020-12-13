@@ -12,7 +12,7 @@ const User = new Schema({
       type: String,
         default: ''
     },
-    type:   {
+    roles:   {
       type: [{
         type: String,
         lowercase: true,

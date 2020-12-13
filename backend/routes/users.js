@@ -8,6 +8,7 @@ const verifyCode = require('../models/verifyCode');
 const authenticate = require('../middleware/auth');
 
 const cryptoRandomString = require("crypto-random-string");
+const bcrypt = require('bcryptjs');
 const nodemailer = require("nodemailer");
 const config = require("config");
 
@@ -36,8 +37,8 @@ router.post('/signup', (req, res, next) => {
         user.firstname = req.body.firstname;
       if (req.body.lastname)
         user.lastname = req.body.lastname;
-      if (req.body.type && req.body.type != "admin" && req.body.type != "consumer") //admin can only be set by editing the database directly
-        user.type.push(req.body.type);
+      if (req.body.roles && req.body.roles != "admin" && req.body.roles != "consumer") //admin can only be set by editing the database directly
+        user.roles.push(req.body.roles);
       user.save(async (err, user) => {
         if (err) {
           res.statusCode = 500;
@@ -108,6 +109,10 @@ router.get("/verification/resend", authenticate.verifyUser,
 
           if (!user) {
               res.json({ success: false });
+          } else if(user.status === "verified"){
+            res.statusCode = 400;
+            res.setHeader('Content-Type', 'application/json');
+            res.json({success: false, status: 'Email already verifiedl!'});
           } else {
               await verifyCode.deleteMany({ email: user.email });
 
@@ -170,6 +175,33 @@ router.get(
       }
   }
 );
+
+router.post('/editDetails', authenticate.verifyUser, async (req, res, next) => {
+  try {
+    const user = await User.findById(req.user._id);
+    if (req.body.firstname)
+      user.firstname = req.body.firstname;
+    if (req.body.lastname)
+      user.lastname = req.body.lastname;
+    if (req.body.email)
+      user.email = req.body.email;
+    if (req.body.phone)
+      user.phone = req.body.phone;
+    if (req.body.roles && req.body.roles != "admin" && user.roles.indexOf(req.body.roles) == -1) //admin can only be set by editing the database directly
+      user.roles.push(req.body.roles);
+    if (req.body.password)
+      await user.setPassword(req.body.password);
+    await user.save()
+    res.statusCode = 200;
+    res.setHeader('Content-Type', 'application/json');
+    res.json({success: true, status: 'Details Succesfully Updated!', user: user});
+  }
+  catch (err) {
+    res.statusCode = 401;
+    res.setHeader('Content-Type', 'application/json');
+    res.json({success: false, err: err}); 
+  }
+});
 
 router.get('/checkJWTtoken', (req, res) => {
   passport.authenticate('jwt', {session: false}, (err, user, info) => {

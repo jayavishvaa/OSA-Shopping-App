@@ -38,6 +38,17 @@ exports.jwtPassport = passport.use(new JwtStrategy(opts,
 
 exports.verifyUser = passport.authenticate('jwt', {session: false});
 
+exports.verifySeller = (req, res, next) => {
+    if(req.user.roles.indexOf("seller") > -1 && req.user.status === "verified") {
+        next();
+    }
+    else {
+        var err = new Error('You are not registered as a seller!');
+        err.status = 403;
+        next(err);
+    }
+};
+
 exports.verifyAdmin = (req, res, next) => {
     if(req.user.admin) {
         next();

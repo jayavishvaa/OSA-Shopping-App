@@ -4,7 +4,8 @@ const logger = require('morgan');
 const config = require("config");
 const passport = require('passport');
 
-var usersRouter = require('./routes/users');
+const usersRouter = require('./routes/users');
+const groceryStoreRouter = require('./routes/groceryStores');
 
 const app=express();
 
@@ -14,6 +15,7 @@ app.use(passport.initialize());
 app.use(passport.session());
 
 app.use('/users', usersRouter);
+app.use('/grocery', groceryStoreRouter);
 
 mongoose.connect(config.get("mongoUrl"))
         .then(()=>console.log('mongo connected..'))

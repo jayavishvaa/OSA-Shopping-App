@@ -11,7 +11,6 @@ const cryptoRandomString = require("crypto-random-string");
 const bcrypt = require('bcryptjs');
 const nodemailer = require("nodemailer");
 const config = require("config");
-const { async } = require('crypto-random-string');
 
 let transporter = nodemailer.createTransport({
   host: 'smtp.ethereal.email',

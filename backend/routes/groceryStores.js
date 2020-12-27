@@ -11,7 +11,7 @@ router.post('/', authenticate.verifyUser, authenticate.verifySeller, async (req,
     try {
         const Store = await groceryStore.findOne({seller: req.user._id });
         if(Store) {
-            res.statusCode = 401;
+            res.statusCode = 409;
             res.setHeader('Content-Type', 'application/json');
             res.json({success: false, err: "Store already registered under this user"}); 
         } else {
@@ -20,6 +20,48 @@ router.post('/', authenticate.verifyUser, authenticate.verifySeller, async (req,
             res.statusCode = 200;
             res.setHeader('Content-Type', 'application/json');
             res.json({success: true, status: "Store registered"}); 
+        }
+    } catch(err) {
+        res.statusCode = 401;
+        res.setHeader('Content-Type', 'application/json');
+        res.json({success: false, err: err}); 
+    }
+});
+
+router.put('/', authenticate.verifyUser, authenticate.verifySeller, async (req, res, next) => {
+    try {
+        const store = await groceryStore.findOne({seller: req.user._id });
+        if(!store) {
+            res.statusCode = 404;
+            res.setHeader('Content-Type', 'application/json');
+            res.json({success: false, err: "No Store registered under this user"}); 
+        } else {
+            if(req.body.name)
+                store.name = req.body.name;
+            await store.save();
+            res.statusCode = 200;
+            res.setHeader('Content-Type', 'application/json');
+            res.json({success: true, status: "Store details updated"}); 
+        }
+    } catch(err) {
+        res.statusCode = 401;
+        res.setHeader('Content-Type', 'application/json');
+        res.json({success: false, err: err}); 
+    }
+});
+
+router.delete('/', authenticate.verifyUser, authenticate.verifySeller, async (req, res, next) => {
+    try {
+        const store = await groceryStore.findOne({seller: req.user._id });
+        if(!store) {
+            res.statusCode = 404;
+            res.setHeader('Content-Type', 'application/json');
+            res.json({success: false, err: "No Store registered under this user"}); 
+        } else {
+            await store.remove();
+            res.statusCode = 200;
+            res.setHeader('Content-Type', 'application/json');
+            res.json({success: true, status: "Store removed"}); 
         }
     } catch(err) {
         res.statusCode = 401;
@@ -46,7 +88,7 @@ router.post('/items', authenticate.verifyUser, authenticate.verifySeller, async 
     try {
         const store = await groceryStore.findOne({seller: req.user._id });
         if(!store) {
-            res.statusCode = 401;
+            res.statusCode = 404;
             res.setHeader('Content-Type', 'application/json');
             res.json({success: false, err: "No Store registered under this user"}); 
         } else {
@@ -55,6 +97,53 @@ router.post('/items', authenticate.verifyUser, authenticate.verifySeller, async 
             res.statusCode = 200;
             res.setHeader('Content-Type', 'application/json');
             res.json({success: true, status: "Item added to store"}); 
+        }
+    } catch(err) {
+        res.statusCode = 401;
+        res.setHeader('Content-Type', 'application/json');
+        res.json({success: false, err: err}); 
+    }
+});
+
+router.put('/items/:itemId', authenticate.verifyUser, authenticate.verifySeller, async (req, res, next) => {
+    try {
+        const store = await groceryStore.findOne({seller: req.user._id });
+        if(!store || !store.items.id(req.params.itemId)) {
+            res.statusCode = 404;
+            res.setHeader('Content-Type', 'application/json');
+            res.json({success: false, err: "No such Store ot item found"}); 
+        } else {
+            if(req.body.name)
+                store.items.id(req.params.itemId).name = req.body.name;
+            if(req.body.price)
+                store.items.id(req.params.itemId).price = req.body.price;
+            if(req.body.discount)
+                store.items.id(req.params.itemId).discount = req.body.discount;
+            await store.save();
+            res.statusCode = 200;
+            res.setHeader('Content-Type', 'application/json');
+            res.json({success: true, status: "Item modified"}); 
+        }
+    } catch(err) {
+        res.statusCode = 401;
+        res.setHeader('Content-Type', 'application/json');
+        res.json({success: false, err: err}); 
+    }
+});
+
+router.delete('/items/:itemId', authenticate.verifyUser, authenticate.verifySeller, async (req, res, next) => {
+    try {
+        const store = await groceryStore.findOne({seller: req.user._id });
+        if(!store || !store.items.id(req.params.itemId)) {
+            res.statusCode = 404;
+            res.setHeader('Content-Type', 'application/json');
+            res.json({success: false, err: "No such Store ot item found"}); 
+        } else {
+            store.items.id(req.params.itemId).remove()
+            await store.save();
+            res.statusCode = 200;
+            res.setHeader('Content-Type', 'application/json');
+            res.json({success: true, status: "Item removed"}); 
         }
     } catch(err) {
         res.statusCode = 401;

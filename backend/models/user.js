@@ -3,6 +3,36 @@ const Schema = mongoose.Schema;
 
 const passportLocalMongoose = require('passport-local-mongoose');
 
+const CartItem = new Schema({
+  name: {
+      type: String,
+      required: true
+  },
+  price: {
+      type: Number,
+      required: true
+  },
+  seller: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: 'User',
+      required: true
+  },
+  store: {
+      type: mongoose.Schema.Types.ObjectId,
+      required: true
+  },
+  item: {
+      type: mongoose.Schema.Types.ObjectId,
+      required: true
+  },
+  quantity: {
+      type: Number,
+      default: 1
+  },
+}, {
+  timestamps: true
+});
+
 const User = new Schema({
     firstname: {
       type: String,
@@ -37,7 +67,8 @@ const User = new Schema({
     status: {
         type: String,
         default: "pending"
-    }
+    },
+    cart: [CartItem]
 });
 
 User.plugin(passportLocalMongoose);

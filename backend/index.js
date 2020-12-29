@@ -6,6 +6,7 @@ const passport = require('passport');
 
 const usersRouter = require('./routes/users');
 const groceryStoreRouter = require('./routes/groceryStores');
+const cartRouter = require('./routes/carts');
 
 const app=express();
 
@@ -16,6 +17,7 @@ app.use(passport.session());
 
 app.use('/users', usersRouter);
 app.use('/grocery', groceryStoreRouter);
+app.use('/cart', cartRouter);
 
 mongoose.connect(config.get("mongoUrl"))
         .then(()=>console.log('mongo connected..'))

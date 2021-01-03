@@ -1,5 +1,5 @@
 {
     "secretKey": "12345-67890-09876-54321",
-    "mongoUrl": "mongodb://localhost:27017/OneStopApp",
+    "mongoUrl": "mongodb+srv://osauser:U1reY2X53xiO8LG8@cluster0.jrxwn.mongodb.net/osa?retryWrites=true&w=majority",
     "baseUrl": "http://localhost:8000"
 }

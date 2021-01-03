@@ -19,7 +19,7 @@ app.use('/users', usersRouter);
 app.use('/grocery', groceryStoreRouter);
 app.use('/cart', cartRouter);
 
-mongoose.connect(config.get("mongoUrl"))
+mongoose.connect(config.get("mongoUrl"), { useUnifiedTopology: true, useNewUrlParser: true })
         .then(()=>console.log('mongo connected..'))
         .catch(err=>{console.log(err)});
 

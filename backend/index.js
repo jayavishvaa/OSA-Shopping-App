@@ -3,10 +3,12 @@ const mongoose = require("mongoose");
 const logger = require('morgan');
 const config = require("config");
 const passport = require('passport');
+const Joi = require('joi');
+Joi.objectId = require('joi-objectid')(Joi);
 
-const usersRouter = require('./routes/users');
-const groceryStoreRouter = require('./routes/groceryStores');
-const cartRouter = require('./routes/carts');
+const authRouter = require('./routes/auth');
+const registerRouter = require('./routes/register');
+const shopsRouter = require('./routes/shops');
 
 const app=express();
 
@@ -15,11 +17,11 @@ app.use(express.json());
 app.use(passport.initialize());
 app.use(passport.session());
 
-app.use('/users', usersRouter);
-app.use('/grocery', groceryStoreRouter);
-app.use('/cart', cartRouter);
+app.use('/api/auth', authRouter);
+app.use('/api/register', registerRouter);
+app.use('/api/shops', shopsRouter);
 
-mongoose.connect(config.get("mongoUrl"), { useUnifiedTopology: true, useNewUrlParser: true })
+mongoose.connect(config.get("mongodbUrl"), { useUnifiedTopology: true, useNewUrlParser: true })
         .then(()=>console.log('mongo connected..'))
         .catch(err=>{console.log(err)});
 

@@ -1,0 +1,7 @@
+{
+    "jwtPrivateKey": "osa_jwtPrivateKey",
+    "mongodbUrl": "mongodb+srv://osauser:U1reY2X53xiO8LG8@cluster0.jrxwn.mongodb.net/osa?retryWrites=true&w=majority",
+    "baseUrl": "http://localhost:8000",
+    "accountSid": "AC69f2910426e7ae3e57f2b1548d753070", 
+    "authToken": "ebef96b521e10f8ae63c2b4d2c9bfd53"
+}

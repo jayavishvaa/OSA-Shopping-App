@@ -1,18 +1,16 @@
 const mongoose = require('mongoose');
 const Joi = require('joi');
 
-const { categorySchema } = require('./category');
 const { userSchema } = require('./user');
 
 function validateItem(item) {
     const schema = Joi.object({
-        image: Joi.required(),
+        // image: Joi.required(),
         name: Joi.string().min(3).max(100).required(),
-        description: Joi.string().min(5).max(255),
+        description: Joi.string().max(255),
         MRP: Joi.number().required().min(0),
         sellingPrice: Joi.required().number().min(0),
-        categoryId: Joi.objectId().default(null),
-        sellerId: Joi.objectId().required()
+        shop: Joi.objectId().required()
     });
 
     return schema.validate(item);
@@ -27,8 +25,11 @@ const itemSchema = new mongoose.Schema({
     },
     description: {
         type: String,
-        minlength: 5,
         maxlength: 255,
+    },
+    dated: {
+        type: Date,
+        default: Date.now()
     },
     MRP: {
         type: Number,
@@ -40,7 +41,10 @@ const itemSchema = new mongoose.Schema({
         required: true,
         min: 0
     },
-    category: categorySchema,
+    shop: {
+        type: mongoose.Schema.Types.ObjectId,
+        required: true
+    }
 });
 
 const Item = mongoose.model('Item', itemSchema);

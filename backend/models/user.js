@@ -3,7 +3,7 @@ const Joi = require('joi');
 const jwt = require('jsonwebtoken');
 const config = require('config');
 
-const { itemSchema } = require('./globalItem');
+const { itemSchema } = require('./item');
 
 function validateUser(user) {
   const schema = Joi.object({
@@ -33,7 +33,6 @@ const userSchema = new mongoose.Schema({
   landmark: {
     type: String,
     default: 'landmark',
-    minlength: 3,
     maxlength: 50
   },
   pinCode: {
@@ -59,6 +58,10 @@ const userSchema = new mongoose.Schema({
     default: 'customer',
     enum: ['customer', 'seller', 'admin'],
   },
+  dateJoined: {
+    type: Date,
+    default: Date.now()
+  },
   cartItems: {
     type: [itemSchema]
   },
@@ -66,7 +69,21 @@ const userSchema = new mongoose.Schema({
 });
 
 userSchema.methods.generateAuthToken = function() {
-  const token = jwt.sign({ _id: this._id, phoneNumber: this.phoneNumber, pinCode: this.pinCode }, config.get('jwtPrivateKey'));
+  const token = jwt.sign({
+    _id: this._id,
+    phoneNumber: this.phoneNumber,
+    pinCode: this.pinCode
+  }, config.get('jwtPrivateKey'));
+  return token;
+}
+
+userSchema.methods.generateSellerAuthToken = function(shopId) {
+  const token = jwt.sign({
+    _id: this._id,
+    phoneNumber: this.phoneNumber,
+    pinCode: this.pinCode,
+    shop: shopId
+  }, config.get('jwtPrivateKey'));
   return token;
 }
 

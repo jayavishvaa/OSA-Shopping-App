@@ -8,7 +8,7 @@ export default useAuth = () => {
   const { user, setUser } = useContext(AuthContext);
 
   const logIn = (authToken) => {
-    const user = jwtDecode(authToken, { header: true});
+    const user = jwtDecode(authToken);
     setUser(user);
     authStorage.storeToken(authToken);
   };

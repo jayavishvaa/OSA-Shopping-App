@@ -1,6 +1,6 @@
 import client from "./client";
 
-const shops = ({pinCode, apiEndPoint}) => client.get("/shops", { pinCode, apiEndPoint });
+const shops = apiEndPoint => client.get("/shops", { apiEndPoint });
 
 export default {
   shops,

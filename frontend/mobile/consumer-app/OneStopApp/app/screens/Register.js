@@ -1,186 +1,268 @@
-import React, { useState } from 'react';
-import { View, StyleSheet, TouchableOpacity, ScrollView } from 'react-native';
+import React, { useState, useEffect } from 'react';
+import { Image, ScrollView, StyleSheet, View, Alert } from 'react-native';
 import * as Yup from 'yup';
-import jwtDecode from 'jwt-decode';
+import * as Location from "expo-location";
 
 import Screen from '../components/Screen';
-import Text from '../components/Text';
 import defaultStyles from '../config/styles';
+import Text from '../components/Text';
 import {
     ErrorMessage,
     Form,
     FormField,
     SubmitButton,
 } from "../components/forms";
-import usersApi from "../api/users";
-import useAuth from "../auth/useAuth";
-import useApi from "../hooks/useApi";
-import ActivityIndicator from "../components/ActivityIndicator";
-import useLocation from '../hooks/useLocation';
-import LandingPage from './LandingPage';
-import routes from '../navigation/routes';
-import authStorage from '../auth/storage';
+import useAuth from '../auth/useAuth';
+import locationApi from '../api/location';
+import customerRegisterApi from '../api/users';
 
-const validationSchema = Yup.object().shape({
-    fullName: Yup.string().required('Please enter your name').min(3).max(100).label('Your Name'),
-    homeAddress: Yup.string().min(5, 'Please enter a valid address').max(255, 'Characters limit exceeded'),
-    landmark: Yup.string().min(3).default(''),
-    city: Yup.string().min(3).required(),
-    pinCode: Yup.string().required('Please enter your 6 digit area PIN code').length(6, 'Please enter a valid PIN code of your area').matches("\\d{6}", 'Please enter a valid PIN code of your area'),
-})
+const validationSchemaWithLocation = Yup.object().shape({
+    fullName: Yup.string()
+        .required('Please enter your full name')
+        .min(3).max(100)
+        .label('Full Name'),
+    homeAddress: Yup.string()
+        .required('Please provide your Flat No. / House No. / Street Name')
+        .min(5).max(255)
+        .label('Flat No. / House No. / Street Name'),
+    landmark: Yup.string()
+        .min(3).max(50)
+        .label('Landmark'),
+    pinCode: Yup.string().label('Pin Code'),
+    city: Yup.string().label('City')
+});
 
-function Register({navigation}) {
-    const registerApi = useApi(usersApi.register);
-    const [error, setError] = useState();
+const validationSchemaWithoutLocation = Yup.object().shape({
+    fullName: Yup.string()
+        .required('Please enter your full name')
+        .min(3).max(100)
+        .label('Full Name'),
+    homeAddress: Yup.string()
+        .required('Please provide your Flat No. / House No. / Street Name')
+        .min(5).max(255)
+        .label('Flat No. / House No. / Street Name'),
+    landmark: Yup.string()
+        .min(3).max(50)
+        .label('Landmark'),
+    pinCode: Yup.string()
+        .matches(/^\d{6}$/).length(6, 'Please enter a valid area pin code')
+        .required('Please provide your area pin code')
+        .label('Pin Code'),
+    city: Yup.string()
+        .min(3).max(50)
+        .required('Please provide your city name')
+        .label('City')
+});
 
-    const token = authStorage.getToken();
-    const decodedToken = jwtDecode(token);
-    console.log(decodedToken);
-  
-    const handleSubmitDetails = async userInfo => {
-        const data = {...userInfo, phoneNumber: decodedToken.phoneNumber}
-        console.log(data);
-        const result = await registerApi.request(data);
-        console.log(result);
+function Register() {
+    const auth = useAuth();
+    const [address, setAddress] = useState([]);
+    const [error, setError] = useState(false);
+    const [locationError, setLocationError] = useState(false);
 
-        if (!result.ok) {
-            if (result.data) setError(result.data.error);
-            else {
-                setError("An unexpected error occurred.");
-                console.log(result);
-            }
-            return;
-        }
-        navigation.navigate(routes.LANDINGPAGE);
+    const getLocation = async () => {
+        try {
+            const { status } = await Location.requestPermissionsAsync();
+            if (status !== 'granted') return setLocationError(true);
+            setLocationError(false);
+            const location = await Location.getCurrentPositionAsync();
+            const result = await locationApi.location({
+                latitude: location.coords.latitude,
+                longitude: location.coords.longitude
+            });
+            if (!result.ok) return setLocationError(true);
+            setLocationError(false);
+            setAddress(result.data[0]);
+          } catch (error) {
+            console.log(error);
+          }
     }
 
-    const handleSkipForNow = async () => {
-
+    useEffect(() => {
+        getLocation();
+      }, []);
+      
+      const raiseAlertWithLocation = formData => {
+          const data = {...formData, pinCode: address.zipcode, city: address.city};
+          console.log(data);
+          Alert.alert(
+              `Are these details correct to the best of your knowledge-`,
+              `Seller's Full Name: ${formData.fullName}\nFlat no. / House no. / Street name: ${formData.homeAddress}\nLandmark: ${formData.landmark}\nArea Pin Code: ${address.zipcode}\nCity: ${address.city}`,
+              [
+                  {
+                      text: "No",
+                      onPress: () => console.log("Cancel Pressed"),
+                      style: "cancel"
+                  },{},
+                { text: "Yes", onPress: () => handleSubmit(data) }
+              ],
+              { cancelable: false }
+            );
+      }
+    const raiseAlert = formData => {
+        Alert.alert(
+            `Are these details correct to the best of your knowledge-`,
+            `Seller's Full Name: ${formData.fullName}\nFlat no. / House no. / Street name: ${formData.homeAddress}\nLandmark: ${formData.landmark}\nArea Pin Code: ${formData.pinCode}\nCity: ${formData.city}`,
+            [
+                {
+                    text: "No",
+                    onPress: () => console.log("Cancel Pressed"),
+                    style: "cancel"
+                },{},
+              { text: "Yes", onPress: () => handleSubmit(formData) }
+            ],
+            { cancelable: false }
+          );
     }
 
-    const handleGetAddress = async () => {
-        // if (!location) return;
-        // setLocationProvided(true);
-        // console.log(location);
-        // try {
-        //     const result = await Geocoder.from(location.coords.latitude, location.coords.longitude);
-        //     console.log(result);
-        // } catch (error) {
-        //     console.log(error);
-        // }
+    const handleSubmit = async formData => {
+        const user = auth.user;
+        const dataToSend = { ...formData, _id: user._id };
+        const result = await customerRegisterApi.register(dataToSend);
+        if (!result.ok) return setError(true);
+        setError(false);
+        auth.logIn(result.data);
     }
-
-    return (
-        <>
-        {/* <ActivityIndicator visible={registerApi.loading || loginApi.loading} /> */}
-        <Screen>
-            <ScrollView>
-            <Text style={styles.registerText}>Register</Text>
-            <View style={styles.form}>
-            <View style={styles.formField}>
-            <Form
-                initialValues={{ fullName: '', homeAddress: '', landmark: '', city: '', pinCode: '' }}
-                onSubmit={handleSubmitDetails}
-                validationSchema={validationSchema}
-            >
-                <ErrorMessage error="Invalid Phone Number" visible={error}/>
-                <FormField
-                    autoCapitalize="none"
-                    autoCorrect={false}
-                    keyboardType="default"
-                    name="fullName"
-                    icon="account"
-                    placeholder="Your Full Name"
-                />
-                <FormField
-                    autoCapitalize="none"
-                    maxlength={255}
-                    multiline
-                    numberOfLines={2}
-                    icon="home"
-                    autoCorrect={false}
-                    keyboardType="default"
-                    name="homeAddress"
-                    default={``}
-                    placeholder="Your Home Address"
-                />
-                <FormField
-                    autoCapitalize="none"
-                    maxlength={50}
-                    icon="alpha-l-box"
-                    autoCorrect={false}
-                    keyboardType="default"
-                    name="landmark"
-                    placeholder="Landmark"
-                />
-                <FormField
-                    autoCapitalize="none"
-                    maxlength={50}
-                    icon="home-city"
-                    autoCorrect={false}
-                    keyboardType="default"
-                    name="city"
-                    placeholder="City"
-                />
-                <FormField
-                    autoCapitalize="none"
-                    maxlength={50}
-                    icon="map-marker"
-                    autoCorrect={false}
-                    keyboardType="default"
-                    name="pinCode"
-                    placeholder="Area PIN code"
-                />
-                <Text style={styles.orText}>or</Text>
-                <TouchableOpacity onPress={handleGetAddress}>
-                    <Text style={styles.useMyLocation}>Use my current location</Text>
-                </TouchableOpacity>
-                <SubmitButton title="Register" />
-            </Form>
-            </View>
-            <Text style={styles.orText}>or</Text>
-            <TouchableOpacity onPress={handleSkipForNow}>
-                <Text style={styles.skipForNow}>Skip for now</Text>
-            </TouchableOpacity>
-            </View>
+  return(
+    <Screen>
+        <View style={styles.container}>
+            {locationError && <Text style={styles.locationError}>Couldn't retrieve your Location, make sure you have given required permissions</Text>}
+            <ScrollView showsVerticalScrollIndicator={false}>
+                <Image style={styles.sellerImage} source={require('../assets/sellerDetailsIcon.png')}/>
+                <Text style={styles.personalDetailsText}>Enter your personal details</Text>
+                {address && !locationError && <Form
+                    initialValues={{
+                        fullName: '',
+                        homeAddress: address.streetName,
+                        landmark: '' }}
+                    onSubmit={raiseAlertWithLocation}
+                    validationSchema={validationSchemaWithLocation}
+                >
+                    <ErrorMessage error="Something went wrong" visible={error}/>
+                    <FormField
+                        autoCapitalize="none"
+                        autoCorrect={false}
+                        icon="account"
+                        keyboardType="default"
+                        name="fullName"
+                        placeholder="Your full name"
+                    />
+                    <FormField
+                        autoCapitalize="none"
+                        autoCorrect={false}
+                        icon="home"
+                        keyboardType="default"
+                        name="address"
+                        name="homeAddress"
+                        placeholder={address.streetName === '' ? "Flat no. / House no. / Street name" : address.streetName}
+                    /> 
+                    <FormField
+                        autoCapitalize="none"
+                        autoCorrect={false}
+                        icon="alpha-l-box"
+                        keyboardType="default"
+                        name="landmark"
+                        placeholder="Landmark"
+                    />
+                    <FormField
+                        value={address.zipcode}
+                        editable={false}
+                        icon="map-marker"
+                        width="50%"
+                    />
+                    <FormField
+                        icon="home-city"
+                        value={address.city}
+                        editable={false}
+                        width="50%"
+                    />
+                    <SubmitButton title="Register"/>
+                </Form>}
+                {locationError && <Form
+                    initialValues={{
+                        fullName: '',
+                        homeAddress: '',
+                        landmark: '',
+                        pinCode: '',
+                        city: '' }}
+                    onSubmit={raiseAlert}
+                    validationSchema={validationSchemaWithoutLocation}
+                >
+                    <ErrorMessage error="Something went wrong" visible={error}/>
+                    <FormField
+                        autoCapitalize="none"
+                        autoCorrect={false}
+                        icon="account"
+                        keyboardType="default"
+                        name="fullName"
+                        placeholder="Your full name"
+                    />
+                    <FormField
+                        autoCapitalize="none"
+                        autoCorrect={false}
+                        icon="home"
+                        keyboardType="default"
+                        name="address"
+                        name="homeAddress"
+                        placeholder="Flat no. / House no. / Street Name"
+                    />
+                    <FormField
+                        autoCapitalize="none"
+                        autoCorrect={false}
+                        icon="alpha-l-box"
+                        keyboardType="default"
+                        name="landmark"
+                        placeholder="Landmark"
+                    />
+                    <FormField
+                        autoCapitalize="none"
+                        autoCorrect={false}
+                        icon="map-marker"
+                        keyboardType="number-pad"
+                        name="pinCode"
+                        width="50%"
+                        placeholder="Area pin code"
+                    />
+                    <FormField
+                        autoCapitalize="none"
+                        autoCorrect={false}
+                        icon="home-city"
+                        keyboardType="default"
+                        name="city"
+                        width="50%"
+                        placeholder="City"
+                    />
+                    <SubmitButton title="Register"/>
+                </Form>}
+                <Text>{`\n \n \n \n \n \n \n `}</Text>
             </ScrollView>
-        </Screen>
-        </>
-    )
+        </View>
+    </Screen>
+  );
 }
 
 const styles = StyleSheet.create({
-    registerText: {
-        color: defaultStyles.colors.medium,
-        fontSize: 50,
-        marginTop: '10%',
-        marginLeft: 15
-    },
-    form: {
-        margin: 10,
-        marginTop: '12%'
-    },
-    formField: {
-        backgroundColor: defaultStyles.colors.light,
-        padding: 10,
-        borderRadius: 10,
-        marginBottom: 10
-    },
-    orText: {
-        alignSelf: 'center',
-        color: defaultStyles.colors.medium
-    },
-    skipForNow: {
-        alignSelf: 'center',
-        color: defaultStyles.colors.primary,
-        marginTop: '5%',
-        marginBottom: '5%'
-    },
-    useMyLocation: {
-        alignSelf: 'center',
-        marginBottom: 20,
-        color: 'green'
-    }
-})
+  container:{
+    padding: 10
+  },
+  locationError: {
+    textAlign: 'center',
+    color: 'rgba(255,0,0,0.4)'
+  },
+  personalDetailsText: {
+    color: 'rgba(0, 100, 0, 0.8)',
+    alignSelf: 'center',
+  },
+  registerText: {
+      color: defaultStyles.colors.medium,
+      fontSize: 30,
+      alignSelf: 'center'
+  },
+  sellerImage: {
+      width: "100%",
+      resizeMode: 'contain',
+      height: 200
+  }
+});
 
 export default Register;

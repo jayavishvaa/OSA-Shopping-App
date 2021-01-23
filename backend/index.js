@@ -9,6 +9,8 @@ Joi.objectId = require('joi-objectid')(Joi);
 const authRouter = require('./routes/auth');
 const registerRouter = require('./routes/register');
 const shopsRouter = require('./routes/shops');
+const usersRouter = require('./routes/users');
+const locationRouter = require('./routes/location');
 
 const app=express();
 
@@ -20,6 +22,8 @@ app.use(passport.session());
 app.use('/api/auth', authRouter);
 app.use('/api/register', registerRouter);
 app.use('/api/shops', shopsRouter);
+app.use('/api/users', usersRouter);
+app.use('/api/location', locationRouter);
 
 mongoose.connect(config.get("mongodbUrl"), { useUnifiedTopology: true, useNewUrlParser: true })
         .then(()=>console.log('mongo connected..'))

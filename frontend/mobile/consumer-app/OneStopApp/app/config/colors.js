@@ -1,5 +1,7 @@
 export default {
-  primary: "#4287f5",
+  primary: "rgba(0,0,0,0.2)",
+  font: 'rgba(0,0,0,0.8)',
+  fontSecondary: 'rgba(0,0,0,0.4)',
   secondary: "#4ecdc4",
   black: "#000",
   white: "#fff",

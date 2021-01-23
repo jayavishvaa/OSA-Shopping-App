@@ -14,8 +14,6 @@ import authApi from "../api/auth";
 import useAuth from "../auth/useAuth";
 import defaultStyles from '../config/styles';
 import Text from '../components/Text';
-import routes from '../navigation/routes';
-import authStorage from '../auth/storage';
 
 const phoneNumbervalidationSchema = Yup.object().shape({
     phoneNumber: Yup.string().required('Please enter your mobile number').length(10).label('Phone Number')
@@ -26,8 +24,8 @@ const otpValidationSchema = Yup.object().shape({
 })
 
 
-function Login({ navigation }) {
-    // const auth = useAuth();
+function Login() {
+    const auth = useAuth();
     const [loginFailed, setLoginFailed] = useState(false);
     const [OTPSend, setOTPSend] = useState(false);
 
@@ -46,8 +44,7 @@ function Login({ navigation }) {
             if (!result.ok) return setLoginFailed(true);
             
             setLoginFailed(false);
-            await authStorage.storeToken(result.data);
-            navigation.navigate(routes.REGISTER);
+            auth.logIn(result.data);
         } catch (error) {
             console.log(error);
         }
@@ -73,19 +70,18 @@ function Login({ navigation }) {
                 />
                 {!OTPSend && <SubmitButton style={styles.submitPhoneNumberButton} title="Send OTP" />}
                 {OTPSend && <>
-                    <View style={styles.otpInput}>
                         <FormField
                             autoCapitalize="none"
                             autoCorrect={false}
                             icon="phone-message"
                             keyboardType="number-pad"
                             name="otp"
+                            width="50%"
                             placeholder="Enter 6 digit OTP"
                         />
                         <TouchableOpacity style={styles.resendOTP}>
                             <Text style={styles.resendOTPText}>Resend OTP</Text>
                         </TouchableOpacity>
-                    </View>
                     <SubmitButton style={styles.submitOTPButton} title="Login"/>
                         </>
                 }
@@ -105,22 +101,18 @@ const styles = StyleSheet.create({
         alignSelf: 'center'
     },
     formField: {
-        alignItems: 'flex-end',
         marginTop: 50,
         marginHorizontal: 12,
     },
     submitPhoneNumberButton: {
         width: '50%',
+        alignSelf: 'flex-end',
         marginRight: 20
     },
-    otpInput:{
-        flexDirection: 'row',
-        width: '50%',
-        alignSelf: 'flex-start'
-    },
     resendOTP: {
-        alignSelf: 'center',
-        marginLeft: '25%'
+        position: 'absolute',
+        right: '10%',
+        bottom: '45%'
     },
     resendOTPText: {
         fontSize: 16,

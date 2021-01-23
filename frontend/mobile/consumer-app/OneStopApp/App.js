@@ -3,10 +3,13 @@ import { NavigationContainer } from "@react-navigation/native";
 import { AppLoading } from "expo";
 
 import navigationTheme from "./app/navigation/navigationTheme";
-// import AppNavigator from "./app/navigation/AppNavigator";
+import AppNavigator from "./app/navigation/AppNavigator";
 // import OfflineNotice from "./app/components/OfflineNotice";
-import AuthNavigator from "./app/navigation/AuthNavigator";
+import Login from './app/screens/Login';
+import NewUserNavigator from './app/navigation/NewUserNavigator';
 import LandingPage from './app/screens/LandingPage';
+import Shops from './app/screens/Shops';
+import CategoriesAndItems from './app/screens/CategoriesAndItems';
 import AuthContext from "./app/auth/context";
 import authStorage from "./app/auth/storage";
 import { navigationRef } from "./app/navigation/rootNavigation";
@@ -30,7 +33,7 @@ export default function App() {
     <AuthContext.Provider value={{ user, setUser }}>
       {/* <OfflineNotice /> */}
       <NavigationContainer ref={navigationRef} theme={navigationTheme}>
-        {user ? <LandingPage /> : <AuthNavigator />}
+        {user ? user.pinCode === '000000' ? <NewUserNavigator/> : <AppNavigator/> : <Login />}
       </NavigationContainer>
     </AuthContext.Provider>
   );

@@ -3,27 +3,28 @@ import { StyleSheet, View, Image, TouchableOpacity, ScrollView } from 'react-nat
 
 import Text from '../components/Text';
 import Screen from '../components/Screen';
+import Header from '../components/Header';
+import SearchBar from '../components/SearchBar';
 import shopsApi from '../api/shops';
-import authStorage from '../auth/storage';
+import routes from '../navigation/routes';
 
-function LandingPage(props) {
+function LandingPage({ navigation }) {
     const [error, setError] = useState(false);
 
     const handlePressSection = async apiEndPoint => {
-        const { pinCode } = await authStorage.getUser();
-        const data = { pinCode, apiEndPoint };
-        console.log(data);
-        const result = await shopsApi.shops(data);
+        const result = await shopsApi.shops(apiEndPoint);
         if (!result.ok) return setError(true);
         setError(false);
+        navigation.navigate(routes.SHOPS);
         console.log(result);
     }
   return(
   <Screen>
+      <Header/>
+      <SearchBar/>
       {error && <Text>Unexpected error occured, please check your network connections or try again after sometime...</Text>}
-      <View style={styles.container}><Text>Search Box</Text>
       <View style={styles.sectionContainer}>
-      <ScrollView>
+      <ScrollView showsVerticalScrollIndicator={false}>
           <View style={styles.row}>
         <TouchableOpacity style={styles.grocery} onPress={() => handlePressSection('grocery')}>
             <Image resizeMode="contain" style={styles.groceryImage} source={require('../assets/sections/grocery.png')}/>
@@ -91,7 +92,6 @@ function LandingPage(props) {
           </View>
       </ScrollView>
       </View>
-      </View>
   </Screen>);
 }
 
@@ -100,7 +100,7 @@ const styles = StyleSheet.create({
       flex: 1,
   },
   sectionContainer: {
-      height: '100%',
+      height: '89%',
       margin: 2,
   },
   grocery: {

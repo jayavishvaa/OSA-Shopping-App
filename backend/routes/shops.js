@@ -44,6 +44,18 @@ router.get('/sellerSideShop', async (req, res) => {
     }
 });
 
+router.get('/getItems', async (req, res) => {
+    try {
+        if (!req.query[0].match(/^[0-9a-fA-F]{24}$/)) return res.status(400).send("wrong id provided");
+
+        const items = await Item.find({ shop: req.query[0] });
+        if (!items) return res.send("no-items-for-the-given-shop");
+        res.send(items);
+    } catch (error) {
+        console.log(error);
+    }
+});
+
 router.post('/', seller, async (req, res) => {
     try {
         let sectionName = req.body.sections;
@@ -96,6 +108,7 @@ router.put('/createItem', async (req, res) => {
             'description',
             'MRP',
             'sellingPrice',
+            'perQty',
             'shop'
         ]));
         await item.save();

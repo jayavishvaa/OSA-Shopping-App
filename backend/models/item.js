@@ -10,6 +10,7 @@ function validateItem(item) {
         description: Joi.string().max(255),
         MRP: Joi.number().required().min(0),
         sellingPrice: Joi.required().number().min(0),
+        perQty: Joi.string().required(),
         shop: Joi.objectId().required()
     });
 
@@ -40,6 +41,11 @@ const itemSchema = new mongoose.Schema({
         type: Number,
         required: true,
         min: 0
+    },
+    perQty: {
+        type: String,
+        required: true,
+        enum: ['kilo', 'gram', 'litre', 'milliliter', 'piece', 'packet', 'bag', 'bottle', 'box']
     },
     shop: {
         type: mongoose.Schema.Types.ObjectId,

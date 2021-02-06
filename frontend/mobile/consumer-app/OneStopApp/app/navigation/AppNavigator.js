@@ -2,7 +2,7 @@ import * as React from 'react';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { FontAwesome, Entypo } from '@expo/vector-icons';
 
-import HomeNavigator from './HomeNavigator';
+import LandingPage from '../screens/LandingPage';
 import Account from '../screens/Account';
 import WhisList from '../screens/WhisList';
 import Offers from '../screens/Offers';
@@ -20,7 +20,7 @@ export default function AppNavigator() {
           color = focused ? defaultStyles.colors.font : 'rgba(0,0,0,0.4)';
           size = focused ? 35 : 32;
           
-          if (route.name === routes.HOME) {
+          if (route.name === routes.LANDINGPAGE) {
              return <Entypo name="home" size={size} color={color} />
             } else if (route.name === routes.ACCOUNT) {
                 iconName = 'user';
@@ -40,10 +40,13 @@ export default function AppNavigator() {
         tabStyle: {
             backgroundColor: defaultStyles.colors.primary,
         },
+        style: {
+            height: 60
+        },
         keyboardHidesTabBar: true,
       }}
       >
-        <Tab.Screen name={routes.HOME} component={HomeNavigator} />
+        <Tab.Screen name={routes.LANDINGPAGE} component={LandingPage} />
         <Tab.Screen name={routes.ACCOUNT} component={Account} />
         <Tab.Screen name={routes.WHISLIST} component={WhisList} />
         <Tab.Screen name={routes.OFFERS} component={Offers} />

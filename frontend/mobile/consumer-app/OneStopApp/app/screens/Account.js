@@ -20,12 +20,18 @@ function Account(props) {
     const auth = useAuth();
     const [user, setUser] = useState([]);
     const [error, setError] = useState(false);
+    const [gettingUser, setGettingUser] = useState(false);
+
     const getUserApi = async () => {
-        console.log(auth.user);
+        setGettingUser(true);
         const result = await usersApi.get(auth.user._id);
-        console.log(result);
-        if (!result.ok) return setError(true);
+        if (!result.ok) {
+            setError(true);
+            setGettingUser(false);
+            return;
+        };
         setError(false);
+        setGettingUser(false);
         setUser(result.data);
     };
 
@@ -49,7 +55,8 @@ function Account(props) {
                     size={105}
                     color='rgba(0,0,0,0.3)'
                 />
-                {user && <View style={styles.userDetails}>
+                {gettingUser && <Text style={styles.subDetail}>Getting user...</Text>}
+                {!gettingUser && user && <View style={styles.userDetails}>
                     <Text style={styles.detail}>{user.fullName}</Text>
                     <Text style={styles.subDetail}>{user.landmark === '' ? `${user.homeAddress}` : `Near ${user.landmark}, ${user.homeAddress}`}</Text>
                     <Text style={styles.subDetail}>{user.pinCode}</Text>

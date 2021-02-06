@@ -11,9 +11,7 @@ const router = express.Router();
 
 router.get('/', async (req, res) => {
     try {
-        const sectionQueried = req.query.apiEndPoint;
-        const sectionInDb = await Section.find({ name: sectionQueried });
-        const shops = await Shop.find({ pinCode: req.query.pinCode, sections: [sectionInDb] });
+        const shops = await Shop.find({ pinCode: req.query.pinCode, sections: [req.query.apiEndPoint] });
         if (!shops) res.send('No registered shop for this section in your area');
     
         res.status(200).send(shops);
@@ -44,13 +42,34 @@ router.get('/sellerSideShop', async (req, res) => {
     }
 });
 
+router.get('/getCategories', async (req, res) => {
+    try {
+        if (!req.query.shopId.match(/^[0-9a-fA-F]{24}$/)) return res.status(400).send("wrong id provided");
+
+        const shop = await Shop.findById(req.query.shopId);
+        if (!shop) return res.status(400).send("invalid id");
+
+        res.send(shop.categories);
+    } catch (error) {
+        console.log(error)
+    }
+});
+
 router.get('/getItems', async (req, res) => {
     try {
-        if (!req.query[0].match(/^[0-9a-fA-F]{24}$/)) return res.status(400).send("wrong id provided");
+        if (!req.query.shopId.match(/^[0-9a-fA-F]{24}$/)) return res.status(400).send("wrong id provided");
 
-        const items = await Item.find({ shop: req.query[0] });
-        if (!items) return res.send("no-items-for-the-given-shop");
-        res.send(items);
+        if (!req.query.categoryName) {
+            const items = await Item.find({ shop: req.query.shopId });
+            if (!items) return res.send("no-items-for-the-given-shop");
+            res.send(items);
+        } else {
+            const items = await Item.find({
+                shop: req.query.shopId,
+                shopCategory: req.query.categoryName
+            })
+            res.send(items);
+        }
     } catch (error) {
         console.log(error);
     }
@@ -91,32 +110,55 @@ router.put('/createCategory', async (req, res) => {
 
         const updatedCategories = shop.categories;
         updatedCategories.push({name: req.body.categoryName});
-        await shop.update({ categories: updatedCategories });
+        await shop.updateOne({ categories: updatedCategories });
         res.send("category-created-successfully");
     } catch (error) {
         console.log(error);
     }
 });
 
-router.put('/createItem', async (req, res) => {
+router.post('/createItem', async (req, res) => {
     try {
         const shop = await Shop.findById(req.body.shop);
         if (!shop) return res.send("invalid shop id provided");
 
-        const item = new Item(_.pick(req.body, [
-            'name',
-            'description',
-            'MRP',
-            'sellingPrice',
-            'perQty',
-            'shop'
-        ]));
+        const item = new Item({ ...req.body });
         await item.save();
 
-        const updatedItems = shop.items;
-        updatedItems.push(item._id);
-        await shop.update({ items: updatedItems })
         res.send("debugging");
+    } catch (error) {
+        console.log(error);
+    }
+});
+
+router.put('/editItem', async (req, res) => {
+    try {
+        const shop = await Shop.findById(req.body.shop);
+        if (!shop) return res.send("invalid shop id provided");
+
+        const item = await Item.findByIdAndUpdate(req.body._id, {
+            name: req.body.name,
+            description: req.body.description,
+            MRP: req.body.MRP,
+            sellingPrice: req.body.sellingPrice,
+            perQty: req.body.perQty,
+            dated: Date.now()
+        }, (err, result) => {
+            if (err) return res.status(404).send("problem in updation")
+        })
+        if (!item) return res.status(404).send("no item with given id");
+        res.send("successfully updated");
+    } catch (error) {
+        console.log(error);
+    }
+});
+
+router.delete('/deleteItem', async (req, res) => {
+    try {
+        await Item.findByIdAndDelete(req.query[0], (err, result) => {
+            if (err) return res.status(404).send("problem in deletion")
+            else res.send("successfully deleted")
+        })
     } catch (error) {
         console.log(error);
     }

@@ -1,24 +1,34 @@
 import React, { useState } from 'react';
-import { StyleSheet, TextInput, View, ScrollView, TouchableHighlight, Alert } from 'react-native';
+import { StyleSheet, TextInput, View, ScrollView, TouchableHighlight, Alert, TouchableOpacity, Modal } from 'react-native';
 import { Entypo } from '@expo/vector-icons';
 import {Picker} from '@react-native-picker/picker';
 
+import AddListModal from './AddListModal';
+import userApi from '../api/users';
+import useAuth from '../auth/useAuth';
 import defaultStyles from '../config/styles';
 import Text from './Text';
 
-function Item({ perQty, sellingPrice, mrp, itemName, description }) {
+function Item({ perQty, sellingPrice, mrp, itemName, description, shopId }) {
+    const auth = useAuth();
+    const [itemPress, setItemPress] = useState(false);
     const [qntError, setQntError] = useState(false);
     const [priceError, setPriceError] = useState(false);
     sellingPrice = parseFloat(sellingPrice);
     const [price, setPrice] = useState(sellingPrice.toFixed(2));
     const [quantity, setQuantity] = useState(1);
-    const [changePrice, setChangePrice] = useState((perQty === 'kg' || perQty === 'gms' || perQty === 'ltr' || perQty === 'ml'));
+    const [changePrice, setChangePrice] = useState((
+        perQty === 'kilo' || perQty === 'gram' ||
+        perQty === 'litre' || perQty === 'milliliter'
+    ));
+    const [modalVisible, setModalVisible] = useState(false);
 
     const handleChangeQty = text => {
         if (!(Number.isInteger(parseInt(text)) || text === '')) return setQntError(true);
+        if (parseInt(text) < 0) return setQntError(true);
         setQntError(false);
         if (text === '') text = 0;
-        if (perQty === 'kg' || perQty === 'gms' || perQty === 'ltr' || perQty === 'ml') {
+        if (perQty === 'kilo' || perQty === 'gram' || perQty === 'litre' || perQty === 'milliliter') {
             const price = parseFloat(text) * sellingPrice;
             setPrice(price.toFixed(2));
             setQuantity(parseFloat(text));
@@ -33,12 +43,13 @@ function Item({ perQty, sellingPrice, mrp, itemName, description }) {
 
     const handleChangePrice = text => {
         if (!(Number.isInteger(parseInt(text)) || text === '')) return setPriceError(true);
+        if (parseInt(text) < 0) return setPriceError(true);
         setPriceError(false);
         if (text === '') text = 0;
-        if (perQty === 'kg' || perQty === 'gms' || perQty === 'ltr' || perQty === 'ml') {
+        if (perQty === 'kilo' || perQty === 'gram' || perQty === 'litre' || perQty === 'milliliter') {
             setPrice(parseFloat(text));
             const quantity = parseFloat(text) / sellingPrice;
-            if (perQty === 'kg' || perQty === 'ltr') setQuantity(quantity.toFixed(3));
+            if (perQty === 'kilo' || perQty === 'litre') setQuantity(quantity.toFixed(3));
             else setQuantity(quantity.toFixed(0));
         } else {
             if (!(Number.isInteger(parseFloat(text)))) return setPriceError(true);
@@ -47,23 +58,31 @@ function Item({ perQty, sellingPrice, mrp, itemName, description }) {
         }
     }
 
-    const handlePressAddToCart = () => {
-        Alert.alert(
-            `${itemName} is successfully added to your cart`,
-            `Quantity: ${quantity} ${perQty} \nPrice: \u20B9${price}`,
-            [
-              { text: "OK", onPress: () => console.log("OK Pressed") }
-            ],
-            { cancelable: false }
-          );
+    const handlePressAddItem = async () => {
+        setModalVisible(true);
     }
   return(
-    <View style={styles.container}>
+    <TouchableOpacity
+        activeOpacity={1}
+        style={styles.container}
+        onPress={() => setItemPress(!itemPress)}
+    > 
+        <AddListModal
+            modalVisible={modalVisible}
+            onHideModal={() => setModalVisible(!modalVisible)}
+            itemName={itemName}
+            description={description}
+            mrp={mrp}
+            price={price}
+            quantity={quantity}
+            perQty={perQty}
+            shopId={shopId}
+        />
         <View style={styles.itemHead}>
             <Entypo name="image-inverted" style={styles.image} size={100} />
             <View style={styles.itemDetails}>
                 <Text style={styles.itemName}>{itemName}</Text>
-                <Text style={styles.itemDescription}>{description}</Text>
+                {description !== '' && <Text style={styles.itemDescription}>{description}</Text>}
                 <ScrollView horizontal={true} showsHorizontalScrollIndicator={false}>
                     <View style={styles.itemPricings}>
                         <Text style={styles.sellingPrice}>{`\u20B9${sellingPrice}`}</Text>
@@ -71,13 +90,14 @@ function Item({ perQty, sellingPrice, mrp, itemName, description }) {
                         {((mrp-sellingPrice) > 0) && 
                             <View style={styles.itemDiscounts}>
                                 <Text style={styles.mrp}>{`MRP: \u20B9${mrp}/${perQty}`}</Text>
-                                <Text style={styles.save}>{`You Save: \u20B9${mrp - sellingPrice}/${perQty}`}</Text>
+                                <Text style={styles.save}>{`Save: \u20B9${mrp - sellingPrice}/${perQty}`}</Text>
                             </View>}
                     </View>
                     <Text>                              </Text>
                 </ScrollView>
             </View>
         </View>
+        {itemPress && <>
         <View style={styles.selectQty}>
             <Text style={styles.giveQuantity}>Quantity:</Text>
             <TextInput
@@ -102,34 +122,30 @@ function Item({ perQty, sellingPrice, mrp, itemName, description }) {
             />}
             {!changePrice && <Text style={styles.sellingPrice}>{price.toString()}</Text>}
             <Text style={styles.sellingPrice}>/-</Text>
-            {!qntError && !priceError && (price > 0) && (quantity > 0) && <TouchableHighlight style={styles.addToCart} onPress={handlePressAddToCart}>
-                <Text style={styles.addToCartText}>Add to cart</Text>
-            </TouchableHighlight>}
+            {!qntError && !priceError && (price > 0) && (quantity > 0) &&
+                <Entypo
+                    name="circle-with-plus"
+                    size={55}
+                    color="rgba(0,100,0,0.8)"
+                    style={{
+                        position: 'absolute',
+                        bottom: 5,
+                        right: 10
+                    }}
+                    onPress={handlePressAddItem}
+                />
+            }
         </View>
         {priceError && <Text style={styles.quantityError}>Please provide a valid price</Text>}
+        </>}
         <View style={styles.separator}/>
-    </View>
+    </TouchableOpacity>
   );
 }
 
 const styles = StyleSheet.create({
-    addToCart: {
-        backgroundColor: 'rgba(0, 110, 0, 0.8)',
-        padding: 10,
-        borderRadius: 12,
-        shadowColor: '#000',
-        shadowOffset: { width: 0, height: 1 },
-        shadowOpacity: 0.8,
-        shadowRadius: 2,  
-        elevation: 5,
-        position: 'absolute',
-        right: 10
-    },
-    addToCartText: {
-        color: 'white',
-    },
   container:{
-      backgroundColor: defaultStyles.colors.light,
+      backgroundColor: 'rgba(0,0,0,0.05)',
       marginBottom: 10
   },
   giveQuantity: {
@@ -204,7 +220,7 @@ mrp: {
       color: defaultStyles.colors.medium,
       paddingHorizontal: 3,
       marginHorizontal: 3
-  }
+  },
 });
 
 export default Item;

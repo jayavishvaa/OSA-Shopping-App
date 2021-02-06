@@ -11,7 +11,8 @@ function validateItem(item) {
         MRP: Joi.number().required().min(0),
         sellingPrice: Joi.required().number().min(0),
         perQty: Joi.string().required(),
-        shop: Joi.objectId().required()
+        shop: Joi.objectId().required(),
+        shopCategory: Joi.string()
     });
 
     return schema.validate(item);
@@ -30,7 +31,7 @@ const itemSchema = new mongoose.Schema({
     },
     dated: {
         type: Date,
-        default: Date.now()
+        default: Date.now
     },
     MRP: {
         type: Number,
@@ -45,11 +46,25 @@ const itemSchema = new mongoose.Schema({
     perQty: {
         type: String,
         required: true,
-        enum: ['kilo', 'gram', 'litre', 'milliliter', 'piece', 'packet', 'bag', 'bottle', 'box']
+        enum: [
+            'kilo', 'gram',
+            'litre', 'milliliter',
+            'piece', 'packet',
+            'bag', 'bottle',
+            'box', 'pouch',
+            'bar', 'tube',
+            'container', 'pound'
+        ]
     },
     shop: {
         type: mongoose.Schema.Types.ObjectId,
         required: true
+    },
+    shopCategory: String,
+    pinCode: {
+        type: String,
+        required: true,
+        match: /^\d{6}$/
     }
 });
 

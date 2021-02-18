@@ -128,7 +128,6 @@ function Register() {
         <View style={styles.container}>
             {locationError && <Text style={styles.locationError}>Couldn't retrieve your Location, make sure you have given required permissions</Text>}
             <ScrollView showsVerticalScrollIndicator={false}>
-                <Image style={styles.sellerImage} source={require('../assets/sellerDetailsIcon.png')}/>
                 <Text style={styles.personalDetailsText}>Enter your personal details</Text>
                 {address && !locationError && <Form
                     initialValues={{

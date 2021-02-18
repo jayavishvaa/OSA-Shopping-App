@@ -1,73 +1,59 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { FlatList, StyleSheet, View } from 'react-native';
 
 import Screen from '../components/Screen';
 import ShopCard from '../components/ShopCard';
 import Header from '../components/Header';
 import SearchBar from '../components/SearchBar';
+import Text from '../components/Text';
+import Loading from './Loading';
+import useAuth from '../auth/useAuth';
+import shopsApi from '../api/shops';
 import routes from '../navigation/routes';
-import CartHead from "../components/CartHead";
 
-function Shops({ navigation }) {
-    const shopData = [
-        {
-            shopName: 'Prime Mart',
-            description: 'Deals in whole range of stationaries, grocery and personal care items',
-            sectionData: ['Grocery', 'Stationaries', 'Beverages'],
-            address: 'Near Railway Station, Hirapur more, Dhanbad'
-        },
-        {
-            shopName: 'Kolkata Bazar',
-            description: 'Deals in all types of clothings and party wears',
-            sectionData: ['Clothings', 'Party Wear'],
-            address: 'Bank more, Dhanbad'
-        },
-        {
-            shopName: 'Prime Mart 2',
-            description: 'Deals in whole range of stationaries, grocery and personal care items',
-            sectionData: ['Grocery', 'Stationaries', 'Beverages'],
-            address: 'Near Railway Station, Hirapur more, Dhanbad'
-        },
-        {
-            shopName: 'Kolkata Bazar 2',
-            description: 'Deals in all types of clothings and party wears',
-            sectionData: ['Clothings', 'Party Wear'],
-            address: 'Bank more, Dhanbad'
-        },
-        {
-            shopName: 'Prime Mart 3',
-            description: 'Deals in whole range of stationaries, grocery and personal care items',
-            sectionData: ['Grocery', 'Stationaries', 'Beverages'],
-            address: 'Near Railway Station, Hirapur more, Dhanbad'
-        },
-        {
-            shopName: 'Kolkata Bazar 3',
-            description: 'Deals in all types of clothings and party wears',
-            sectionData: ['Clothings', 'Party Wear'],
-            address: 'Bank more, Dhanbad'
+function Shops({ route, navigation }) {
+    const auth = useAuth();
+    const [shops, setShops] = useState();
+    const [loading, setLoading] = useState(false);
+    const [error, setError] = useState(false);
+
+    const getShops = async () => {
+        setLoading(true);
+        const result = await shopsApi.shops(route.params.apiEndPoint, auth.user.pinCode);
+        if (!result.ok) {
+            setLoading(false);
+            setError(true);
+            return;
         }
-    ];
+        setLoading(false);
+        setError(false);
+        setShops(result.data);
+    }
+    useEffect(() => {
+        getShops();
+    }, []);
 
   return(
       <Screen>
           <Header/>
-            <CartHead numberInCart={1}/>
             <SearchBar/>
-          <FlatList
-            data={shopData}
-            keyExtractor={(item) => item.shopName}
-            style={{ marginHorizontal: 4}}
-            showsVerticalScrollIndicator={false}
-            renderItem={shop => (
-                <ShopCard
-                onPress={() => navigation.navigate(routes.CATEGORIESANDITEMS)}
-                    shopName={shop.item.shopName}
-                    description={shop.item.description}
-                    sectionData={shop.item.sectionData}
-                    address={shop.item.address}
-                />
-            )}
-        />
+            {loading 
+            ? <Loading/>
+            : <FlatList
+              data={shops}
+              keyExtractor={(item) => item._id}
+              style={{ marginHorizontal: 4}}
+              showsVerticalScrollIndicator={false}
+              renderItem={({ item }) => ( 
+                  <ShopCard
+                      onPress={() => navigation.navigate(routes.CATEGORIES, { shopId: item._id })}
+                      shopName={item.shopName}
+                      description={item.description}
+                      address={item.streetName}
+                  />
+              )}
+            />
+            }
       </Screen>
   );
 }

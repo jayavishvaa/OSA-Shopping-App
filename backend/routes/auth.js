@@ -68,7 +68,7 @@ router.post('/verifySeller', async (req, res) => {
         if (user.roles !== 'seller') user.roles = 'seller';
         await user.save();
         const shop = await Shop.find({ seller: user._id });
-        if (!shop) {
+        if (!shop || shop.length === 0) {
             const token = user.generateAuthToken();
             res.header('x-auth-token', token).send(token);
             return;

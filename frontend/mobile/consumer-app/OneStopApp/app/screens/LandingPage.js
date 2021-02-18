@@ -5,24 +5,17 @@ import Text from '../components/Text';
 import Screen from '../components/Screen';
 import Header from '../components/Header';
 import SearchBar from '../components/SearchBar';
-import shopsApi from '../api/shops';
 import routes from '../navigation/routes';
 
 function LandingPage({ navigation }) {
-    const [error, setError] = useState(false);
 
     const handlePressSection = async apiEndPoint => {
-        const result = await shopsApi.shops(apiEndPoint);
-        if (!result.ok) return setError(true);
-        setError(false);
-        navigation.navigate(routes.SHOPS);
-        console.log(result);
+        navigation.navigate(routes.SHOPS, { apiEndPoint });
     }
   return(
   <Screen>
       <Header/>
       <SearchBar/>
-      {error && <Text>Unexpected error occured, please check your network connections or try again after sometime...</Text>}
       <View style={styles.sectionContainer}>
       <ScrollView showsVerticalScrollIndicator={false}>
           <View style={styles.row}>

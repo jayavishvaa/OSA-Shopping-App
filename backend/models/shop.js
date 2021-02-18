@@ -50,16 +50,14 @@ const shopSchema = new mongoose.Schema({
     },
     dateCreated: {
         type: Date,
-        default: Date.now()
+        default: Date.now
     },
     categories: [new mongoose.Schema({
         name: {
             type: String,
             required: true
         },
-        items: [mongoose.Schema.Types.ObjectId]
     })],
-    items: [mongoose.Schema.Types.ObjectId]
 });
 
 const Shop = mongoose.model('Shop', shopSchema);

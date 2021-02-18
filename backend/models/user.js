@@ -60,12 +60,63 @@ const userSchema = new mongoose.Schema({
   },
   dateJoined: {
     type: Date,
-    default: Date.now()
+    default: Date.now
   },
   cartItems: {
-    type: [itemSchema]
+    type: [new mongoose.Schema({
+      name: {
+        type: String,
+        required: true
+      },
+      description: String,
+      mrp: {
+        type: Number,
+        min: 0
+      },
+      price: Number,
+      quantity: Number,
+      perQty: String,
+      shop: {
+        type: mongoose.Schema.Types.ObjectId,
+        required: true,
+        ref: 'Shop'
+      },
+      keptAt: {
+        type: Date,
+        required: true
+      }
+    })]
   },
-
+  savedLists: {
+    type: [new mongoose.Schema({
+      name: {
+        type: String,
+        required: true
+      },
+      items: [new mongoose.Schema({
+        name: {
+          type: String,
+          required: true
+        },
+        description: String,
+        mrp: {
+          type: Number,
+          min: 0
+        },
+        price: Number,
+        quantity: Number,
+        perQty: String,
+        shop: {
+          type: mongoose.Schema.Types.ObjectId,
+          required: true
+        },
+        keptAt: {
+          type: Date,
+          required: true
+        }
+      })]
+    })]
+  }
 });
 
 userSchema.methods.generateAuthToken = function() {

@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { StyleSheet, View } from 'react-native';
+import { StyleSheet, View, Image, ScrollView } from 'react-native';
 import { FontAwesome5 } from '@expo/vector-icons';
 import * as Yup from 'yup';
 
@@ -106,7 +106,11 @@ function AddItem({ route, navigation }) {
     />
       <Header/>
       <View style={styles.container}>
-      <FontAwesome5 name="box-open" size={110} color="rgba(0,0,0,0.5)" />
+      <FontAwesome5 name="box-open" size={90} color="rgba(0,0,0,0.5)" />
+      {/* <Image
+            source={require('../assets/CreateCategory.png')}
+            style={{width:"50%",height:'25%',marginBottom:'1%'}}
+        /> */}
       <View style={{ width: '100%' }}>
     <Form
         initialValues={{
@@ -197,7 +201,8 @@ const styles = StyleSheet.create({
     container:{
         alignItems: 'center',
         justifyContent: 'center',
-        padding: 15
+        padding: 15,
+        flex:1
     }
 });
 

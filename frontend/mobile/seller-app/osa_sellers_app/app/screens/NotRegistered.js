@@ -13,7 +13,8 @@ function NotRegistered({ navigation }) {
               <Image style={styles.emoji} source={require('../assets/notRegistered.jpeg')}/>
               <Text style={{
                   color: 'rgba(0,0,0,0.5)',
-                  textAlign: 'center'
+                  textAlign: 'center',
+                  margin:'5%',
                 }}>Looks like you are new to this app, please register yourself</Text>
                 <Button
                     onPress={() => navigation.navigate(routes.REGISTER)}

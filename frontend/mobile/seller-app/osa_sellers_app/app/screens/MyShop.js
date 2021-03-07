@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { StyleSheet, TouchableOpacity, View } from 'react-native';
-import { Entypo, FontAwesome5 } from '@expo/vector-icons';
+import { Entypo, FontAwesome5, MaterialCommunityIcons } from '@expo/vector-icons';
 
 import Screen from '../components/Screen';
 import Header from '../components/Header';
@@ -20,6 +20,7 @@ function MyShop({ navigation }) {
     const getShop = async () => {
         if (!auth.user.shop) return navigation.navigate(routes.NOSHOP);
         setLoading(true);
+
         const result = await shopApi.getShopById(auth.user.shop);
         if (!result.ok) return setError(true);
         setError(false);
@@ -34,7 +35,7 @@ function MyShop({ navigation }) {
 
     useEffect(() => {
         getShop();
-    });
+    },[]);
 
     function toTitleCase(str) {
         return str.replace(
@@ -47,7 +48,7 @@ function MyShop({ navigation }) {
     if (shop) shop.sections[0] = toTitleCase(shop.sections[0]);
   return(
       <Screen>
-          <Header/>
+          <Header />
           {loading && <Loading/>}
           {error && <Text style={{ color: 'red' }}>Server Error, Please retry after some time...</Text>}
           {shop && <View style={styles.container}>
@@ -62,7 +63,7 @@ function MyShop({ navigation }) {
                 style={styles.list}
                 onPress={() => navigation.navigate(routes.MYCATEGORIES)}
             >
-                <Entypo name="colours" size={24} color="rgba(0,0,0,0.7)" />
+                <MaterialCommunityIcons name="book-multiple-outline" size={24} color="rgba(0,0,0,0.7)" />
                 <Text style={{
                     marginLeft: 15,
                     color: "rgb(50,50,50)",
@@ -88,7 +89,7 @@ const styles = StyleSheet.create({
       width: '100%',
       height: '100%',
       padding: 10,
-      alignItems: 'center'
+      alignItems: 'center',
   },
   list: {
     backgroundColor: 'rgba(0,0,0,0.1)',

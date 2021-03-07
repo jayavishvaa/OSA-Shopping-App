@@ -1,14 +1,15 @@
 import React, { useState, useEffect } from 'react';
-import { StyleSheet, View, FlatList, TouchableOpacity, RefreshControl } from 'react-native';
+import { StyleSheet, View, FlatList, TouchableOpacity, RefreshControl,Image } from 'react-native';
 import { Entypo } from '@expo/vector-icons';
 
 import Screen from '../components/Screen';
-import Header from '../components/Header';
 import Text from '../components/Text';
 import Loading from './Loading';
 import routes from '../navigation/routes';
 import shopsApi from '../api/shops';
 import useAuth from '../auth/useAuth';
+import Header from '../components/Header';
+
 
 function MyCategories({ navigation }) {
     const auth = useAuth();
@@ -42,16 +43,21 @@ function MyCategories({ navigation }) {
     }
     console.log(longPress);
 
+
   return(
       <Screen>
           <Header/>
           {loading ? <Loading/> : 
             <>
-            <Entypo
+            {/* <Entypo
                 name="colours"
                 size={80}
                 color="rgba(0,0,0,0.5)"
                 style={{ alignSelf: 'center' }}
+            /> */}
+            <Image
+                source={require('../assets/MyCategory.png')}
+                style={{width:"80%",height:'40%',marginBottom:'5%',alignSelf:'center'}}
             />
             <View style={styles.container}>
             <FlatList

@@ -6,7 +6,7 @@ import navigationTheme from "./app/navigation/navigationTheme";
 // import OfflineNotice from "./app/components/OfflineNotice";
 import Login from './app/screens/Login';
 import NewUserNavigator from './app/navigation/NewUserNavigator';
-import AppNavigator from './app/navigation/AppNavigator';
+import NavigationApp from './app/navigation/AppNavigator';
 import LandingPage from './app/screens/LandingPage';
 import AuthContext from "./app/auth/context";
 import authStorage from "./app/auth/storage";
@@ -35,7 +35,7 @@ export default function App() {
     <AuthContext.Provider value={{ user, setUser }}>
       {/* <OfflineNotice /> */}
       <NavigationContainer ref={navigationRef} theme={navigationTheme}>
-        {user ? user.pinCode === '000000' ? <NewUserNavigator/> : <AppNavigator/> : <Login />}
+        {user ? user.pinCode === '000000' ? <NewUserNavigator/> : <NavigationApp/> : <Login />}
       </NavigationContainer>
     </AuthContext.Provider>
   );

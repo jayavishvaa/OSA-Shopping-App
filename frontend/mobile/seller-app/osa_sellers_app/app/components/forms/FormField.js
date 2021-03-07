@@ -1,8 +1,18 @@
 import React from "react";
 import { useFormikContext } from "formik";
+// import { makeStyles } from '@material-ui/core/styles';
 
 import TextInput from "../TextInput";
 import ErrorMessage from "./ErrorMessage";
+
+// const useStyles = makeStyles((theme) => ({
+//   root: {
+//     '& .MuiTextField-root': {
+//       margin: theme.spacing(1),
+//       width: '25ch',
+//     },
+//   },
+// }));
 
 function AppFormField({ name, width, ...otherProps }) {
   const {

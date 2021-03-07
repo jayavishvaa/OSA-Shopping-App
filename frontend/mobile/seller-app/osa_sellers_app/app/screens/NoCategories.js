@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { StyleSheet, View } from 'react-native';
+import { StyleSheet, View, Image} from 'react-native';
 import { Entypo } from '@expo/vector-icons';
 import * as Yup from 'yup';
 
@@ -54,7 +54,10 @@ function NoCategories() {
         />
         <Header/>
         <View style={styles.container}>
-        <Entypo name="colours" size={120} color="rgba(0,0,0,0.5)" />
+        <Image
+            source={require('../assets/CreateCategory.png')}
+            style={{width:"90%",height:'50%',marginBottom:'5%'}}
+        />
         {renderForm
         ? <Form
             initialValues={{

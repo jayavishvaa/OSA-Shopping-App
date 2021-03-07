@@ -189,7 +189,10 @@ function Register() {
 
 const styles = StyleSheet.create({
   container:{
-    padding: 10
+    padding: 10,
+    marginLeft:'1%',
+    marginRight:'1%'
+    
   },
   locationError: {
     textAlign: 'center',

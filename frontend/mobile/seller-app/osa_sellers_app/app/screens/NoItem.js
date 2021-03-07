@@ -1,5 +1,5 @@
 import React from 'react';
-import { StyleSheet, View } from 'react-native';
+import { StyleSheet, View, Image } from 'react-native';
 import { FontAwesome5 } from '@expo/vector-icons';
 
 import Screen from '../components/Screen';
@@ -13,7 +13,11 @@ function NoItem({ route, navigation }) {
       <Screen>
           <Header/>
           <View style={styles.container}>
-            <FontAwesome5 name="box-open" size={120} color="rgba(0,0,0,0.5)" />
+            {/* <FontAwesome5 name="box-open" size={120} color="rgba(0,0,0,0.5)" /> */}
+            <Image
+              source={require('../assets/AddItem.png')}
+              style={{width:"90%",height:'50%',marginBottom:'5%'}}
+            />
             <Text style={{
                 color: 'gray',
                 textAlign: 'center',

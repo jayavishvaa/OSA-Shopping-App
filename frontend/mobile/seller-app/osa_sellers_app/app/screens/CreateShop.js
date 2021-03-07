@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { StyleSheet, View, Button } from 'react-native';
+import { StyleSheet, View, Button, Image,ScrollView,StatusBar,TouchableOpacity } from 'react-native';
 import * as Yup from "yup";
 import * as Location from "expo-location";
 import { FontAwesome } from '@expo/vector-icons';
@@ -195,10 +195,7 @@ useEffect(() => {
                 size={24}
                 color="gray"
             />}
-            <View style={{
-                width: '100%',
-                height: '58%'
-            }}>
+            <View style={{width: '100%',height: '58%'}}>
             <Form
                 initialValues={{
                     shopName: '',
@@ -251,6 +248,7 @@ useEffect(() => {
                     width: '50%',
                     marginLeft: '5%'
                 }}>
+                <TouchableOpacity style={{}}>
                 <Picker
                     items={sections}
                     name="sections"
@@ -258,10 +256,13 @@ useEffect(() => {
                     PickerItemComponent={CategoryPickerItem}
                     placeholder="Sections"
                     width="100%"
+                    
                 />
+                </TouchableOpacity>
                 </View>
                 </View>
-                {!locationError && <SubmitButton title="Create"/>}
+                {/* {!locationError && <SubmitButton title="Create"/>} */}
+                <SubmitButton title="Create"/>
             </Form>
             </View>
       </View>
@@ -272,7 +273,8 @@ useEffect(() => {
 const styles = StyleSheet.create({
   container:{
       flex: 1,
-      padding: 10
+      padding: 10,
+      paddingTop: StatusBar.currentHeight,
   }
 });
 

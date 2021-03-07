@@ -1,4 +1,5 @@
 export default Object.freeze({
+    HOME:"Home",
     ACCOUNT: "Account",
     ADDCATEGORY: "AddCategory",
     ADDITEM: "AddItem",
@@ -18,4 +19,5 @@ export default Object.freeze({
     REGISTER: "Register",
     SERVERERROR: "ServerError",
     SHOPNAVIGATOR: "ShopNavigator",
+    NAVIGATIONAPP:"NavigationApp"
   });

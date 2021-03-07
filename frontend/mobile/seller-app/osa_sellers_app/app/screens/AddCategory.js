@@ -14,6 +14,7 @@ import {
 import UploadScreen from './UploadScreen';
 import useAuth from '../auth/useAuth';
 import shopsApi from '../api/shops';
+import TextField from '@material-ui/core/TextField';
 
 const validationSchema = Yup.object().shape({
     category: Yup.string()
@@ -55,6 +56,13 @@ function AddCategory({ navigation }) {
             onSubmit={handleSubmit}
             validationSchema={validationSchema}
         >
+        <TextField
+          id="outlined-textarea"
+          label="Multiline Placeholder"
+          placeholder="Placeholder"
+          multiline
+          variant="outlined"
+        />
             <ErrorMessage error="Something went wrong" visible={false}/>
             <FormField
                 autoCapitalize="none"

@@ -4,15 +4,15 @@ import {
   StyleSheet,
   TouchableWithoutFeedback,
   Modal,
-  Button,
   FlatList,
 } from "react-native";
 import { MaterialCommunityIcons } from "@expo/vector-icons";
-
+import { Button } from 'react-native-paper'
 import Text from "./Text";
 import defaultStyles from "../config/styles";
 import PickerItem from "./PickerItem";
 import Screen from "./Screen";
+import { EvilIcons } from '@expo/vector-icons';
 
 function AppPicker({
   icon,
@@ -53,7 +53,9 @@ function AppPicker({
       </TouchableWithoutFeedback>
       <Modal visible={modalVisible} animationType="slide">
         <Screen>
-          <Button title="Close" onPress={() => setModalVisible(false)} />
+          <View style={{width:'100%',justifyContent:'center',alignItems:'center',flexDirection:'row'}}> 
+            <Button mode="outlined" icon={props => <EvilIcons name="close" size={22} color="black" {...props}/>} onPress={() => setModalVisible(false)}>Close</Button>
+          </View>
           <FlatList
             data={items}
             keyExtractor={(item) => item.value.toString()}
@@ -91,7 +93,7 @@ const styles = StyleSheet.create({
     flex: 1,
   },
   text: {
-    flex: 1,
+    flex:1,
   },
 });
 

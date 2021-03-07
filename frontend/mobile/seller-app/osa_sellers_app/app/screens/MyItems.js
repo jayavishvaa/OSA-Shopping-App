@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { StyleSheet, View, FlatList, TouchableOpacity, RefreshControl } from 'react-native';
 import { Entypo, FontAwesome5 } from '@expo/vector-icons';
-
 import Screen from '../components/Screen';
 import Header from '../components/Header';
 import Text from '../components/Text';

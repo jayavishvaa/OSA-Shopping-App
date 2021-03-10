@@ -6,6 +6,7 @@ import * as Location from "expo-location";
 import Screen from '../components/Screen';
 import defaultStyles from '../config/styles';
 import Text from '../components/Text';
+import routes from '../navigation/routes';
 import {
     ErrorMessage,
     Form,
@@ -21,13 +22,13 @@ const validationSchema = Yup.object().shape({
         .required('Please enter your full name')
         .min(3).max(100)
         .label('Full Name'),
+    email: Yup.string()
+        .email()
+        .required('Please enter your Email'),
     homeAddress: Yup.string()
         .required('Please provide your Flat No. / House No. / Street Name')
         .min(5).max(255)
         .label('Flat No. / House No. / Street Name'),
-    landmark: Yup.string()
-        .min(3).max(50)
-        .label('Landmark'),
     pinCode: Yup.string()
         .matches(/^\d{6}$/).length(6, 'Please enter a valid area pin code')
         .required('Please provide your area pin code')
@@ -38,7 +39,7 @@ const validationSchema = Yup.object().shape({
         .label('City')
 });
 
-function Register() {
+function Register({navigation}) {
     const auth = useAuth();
     const [address, setAddress] = useState([]);
     const [acquiringLocation, setAcquiringLocation] = useState(false);
@@ -80,22 +81,6 @@ function Register() {
     useEffect(() => {
         getLocation();
       }, []);
-      
-    const raiseAlert = formData => {
-        Alert.alert(
-            `Are these details correct to the best of your knowledge-`,
-            `Seller's Full Name: ${formData.fullName}\nFlat no. / House no. / Street name: ${formData.homeAddress}\nLandmark: ${formData.landmark}\nArea Pin Code: ${formData.pinCode}\nCity: ${formData.city}`,
-            [
-                {
-                    text: "No",
-                    onPress: () => console.log("Cancel Pressed"),
-                    style: "cancel"
-                },{},
-              { text: "Yes", onPress: () => handleSubmit(formData) }
-            ],
-            { cancelable: false }
-          );
-    }
 
     const handleSubmit = async formData => {
         const user = auth.user;
@@ -127,11 +112,11 @@ function Register() {
                 <Form
                     initialValues={{
                         fullName: '',
+                        email: '',
                         homeAddress: address ? address.streetName : '',
-                        landmark: '',
                         pinCode: address ? address.zipcode : '',
                         city: address ? address.city : '' }}
-                    onSubmit={raiseAlert}
+                    onSubmit={handleSubmit}
                     validationSchema={validationSchema}
                 >
                     <ErrorMessage error="Something went wrong" visible={error}/>
@@ -146,19 +131,19 @@ function Register() {
                     <FormField
                         autoCapitalize="none"
                         autoCorrect={false}
+                        icon="email"
+                        keyboardType="default"
+                        name="email"
+                        placeholder="Your Email"
+                    />
+                    <FormField
+                        autoCapitalize="none"
+                        autoCorrect={false}
                         icon="home"
                         keyboardType="default"
                         name="address"
                         name="homeAddress"
                         placeholder="Flat no. / House no. / Street Name"
-                    />
-                    <FormField
-                        autoCapitalize="none"
-                        autoCorrect={false}
-                        icon="alpha-l-box"
-                        keyboardType="default"
-                        name="landmark"
-                        placeholder="Landmark"
                     />
                     <FormField
                         autoCapitalize="none"
@@ -178,7 +163,7 @@ function Register() {
                         width="50%"
                         placeholder="City"
                     />
-                    <SubmitButton title="Register"/>
+                    <SubmitButton title="Register" onPress={() => navigation.navigate(routes.BUSSINESSDETAILS)}/>
                 </Form>
                 <Text>{`\n \n \n \n \n \n \n `}</Text>
             </ScrollView>
@@ -189,10 +174,7 @@ function Register() {
 
 const styles = StyleSheet.create({
   container:{
-    padding: 10,
-    marginLeft:'1%',
-    marginRight:'1%'
-    
+    padding: 10
   },
   locationError: {
     textAlign: 'center',

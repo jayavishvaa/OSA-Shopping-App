@@ -52,7 +52,7 @@ function Login() {
 
     return(
         <Screen style={styles.container}>
-            <Image style={styles.phoneImg} source={require('../assets/phone.png')} />
+            <Image style={styles.phoneImg} source={require('../assets/Login.png')} />
             <View style={styles.formField}>
             <Form
                 initialValues={{ phoneNumber: '', otp: '' }}

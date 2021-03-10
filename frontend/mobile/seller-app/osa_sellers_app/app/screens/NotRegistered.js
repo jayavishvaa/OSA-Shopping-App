@@ -10,7 +10,7 @@ function NotRegistered({ navigation }) {
   return(
       <Screen>
           <View style={styles.container}>
-              <Image style={styles.emoji} source={require('../assets/notRegistered.jpeg')}/>
+              <Image style={{width:"90%",height:'50%',marginBottom:'5%'}} source={require('../assets/NotRegistered.png')}/>
               <Text style={{
                   color: 'rgba(0,0,0,0.5)',
                   textAlign: 'center',

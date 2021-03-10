@@ -3,6 +3,8 @@ export default Object.freeze({
     ACCOUNT: "Account",
     ADDCATEGORY: "AddCategory",
     ADDITEM: "AddItem",
+    BANKDETAILS: "BankDetails",
+    BUSSINESSDETAILS: "BussinessDetails",
     CREATESHOP: "CreateShop",
     LANDINGPAGE: "LandingPage",
     LOADING: "Loading",
@@ -11,6 +13,7 @@ export default Object.freeze({
     MYITEMS: "MyItems",
     MYORDERS: "MyOrders",
     MYSHOP: "MyShop",
+    NAVIGATIONAPP:"NavigationApp",
     NEWSHOPNAVIGATOR: "NewShopNavigator",
     NOCATEGORIES: "NoCategories",
     NOITEMS: "NoItems",
@@ -19,5 +22,4 @@ export default Object.freeze({
     REGISTER: "Register",
     SERVERERROR: "ServerError",
     SHOPNAVIGATOR: "ShopNavigator",
-    NAVIGATIONAPP:"NavigationApp"
   });

@@ -8,6 +8,7 @@ const { itemSchema } = require('./item');
 function validateUser(user) {
   const schema = Joi.object({
     fullName: Joi.string().min(3).max(100).default('New User'),
+    email: Joi.string().email({ minDomainSegments: 2, tlds: { allow: ['com', 'net'] } }),
     homeAddress: Joi.string().min(5).max(255).default(''),
     landmark: Joi.string().min(3).max(50).default(''),
     pinCode: Joi.string().default('').$_match(/^\d{6}$/),
@@ -23,6 +24,11 @@ const userSchema = new mongoose.Schema({
     default: 'New User',
     minlength: 3,
     maxlength: 100
+  },
+  emailId : {
+    type : String,
+    minlength : 5,
+    maxlength : 100
   },
   homeAddress: {
     type: String,

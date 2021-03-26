@@ -10,7 +10,6 @@ const Stack = createStackNavigator();
 const AccountNavigator = () => (
   <Stack.Navigator screenOptions={{ headerShown: false }}>
     <Stack.Screen name={routes.NOSHOP} component={NoShop} />
-    <Stack.Screen name={routes.CREATESHOP} component={CreateShop} />
   </Stack.Navigator>
 );
 

@@ -90,6 +90,7 @@ function Register({navigation}) {
         setError(false);
         auth.logIn(result.data);
     }
+    
   return(
     <Screen>
         <View style={styles.container}>

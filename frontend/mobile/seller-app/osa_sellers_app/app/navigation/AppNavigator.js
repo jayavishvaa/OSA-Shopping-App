@@ -16,6 +16,10 @@ import Screen from '../components/Screen';
 import Header from '../components/Header';
 import { createMaterialBottomTabNavigator } from '@react-navigation/material-bottom-tabs';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
+import Ionicons from 'react-native-vector-icons/Ionicons';
+import AddProduct from '../screens/AddProduct';
+import Dues from '../screens/Dues';
+import Notification from '../screens/Notification';
 
 const Tab = createMaterialBottomTabNavigator();
 const Drawer = createDrawerNavigator();
@@ -26,8 +30,9 @@ const App = () => {
         initialRouteName={routes.SHOPNAVIGATOR}
         activeColor="#ffff00"
         inactiveColor="#fff"
-        labeled={false}
-        barStyle={{ backgroundColor:'#d2691e' }}
+        labeled={true}
+        barStyle={{ backgroundColor:'#d2691e',borderTopColor:'transparent'}}
+        // sceneAnimationEnabled={true}
         // screenOptions={({ route }) => ({
         //   tabBarIcon: ({ focused, color, size }) => {
         //       const iconSize = 30;
@@ -54,28 +59,41 @@ const App = () => {
           component={ShopNavigator}
           options={{
             tabBarLabel: 'home',
+            tabBarBadge: 3,
             tabBarIcon: ({ color }) => (
-              <MaterialCommunityIcons name="home" color={color} size={30} />
+              <MaterialCommunityIcons name="home" color={color} size={27} />
             ),
           }}
         />
         <Tab.Screen 
-          name={routes.MYORDERS} 
-          component={MyOrders} 
+          name={routes.ADDPRODUCT} 
+          component={AddProduct} 
           options={{
-            tabBarLabel: 'Myorders',
+            tabBarLabel: 'AddProduct',
+            
             tabBarIcon: ({ color }) => (
-              <FontAwesome5 name="tasks" size={30} color={color} />
+              <Ionicons name="add-circle-sharp" size={27} color={color} />
             ),
           }}
         />
         <Tab.Screen 
-          name={routes.ACCOUNT} 
-          component={Account} 
+          name={routes.DUES} 
+          component={Dues} 
           options={{
-            tabBarLabel: 'Profile',
+            tabBarLabel: 'Dues',
+            tabBarIcon: ({ color }) => (
+              <FontAwesome5 name="tasks" size={27} color={color} />
+            ),
+          }}
+        />
+        <Tab.Screen 
+          name={routes.NOTIFICATION} 
+          component={Notification} 
+          options={{
+            tabBarLabel: 'Notification',
+            tabBarBadge: 3,
             tabBarIcon: ({ color }) => ( 
-              <MaterialCommunityIcons name="account" color={color} size={30} />
+              <Ionicons name="notifications" color={color} size={27} />
             ),
           }}
         />

@@ -1,11 +1,12 @@
 import React, { useState, useEffect } from 'react';
-import { StyleSheet, View, Button, Image,ScrollView,StatusBar,TouchableOpacity } from 'react-native';
+import { StyleSheet, View, Image,StatusBar,TouchableOpacity } from 'react-native';
 import * as Yup from "yup";
 import * as Location from "expo-location";
 import { FontAwesome } from '@expo/vector-icons';
-
+import { ScrollView } from 'react-native-gesture-handler';
 import Screen from '../components/Screen';
 import Header from '../components/Header';
+import Button from '../components/Button';
 import Text from '../components/Text';
 import CategoryPickerItem from '../components/CategoryPickerItem';
 import {
@@ -21,6 +22,8 @@ import locationApi from '../api/location';
 import useAuth from '../auth/useAuth';
 import shopsApi from '../api/shops';
 import routes from '../navigation/routes';
+import { useNavigation} from '@react-navigation/native';
+import {Title} from 'react-native-paper';
 
 const validationSchema = Yup.object().shape({
     shopName: Yup.string().required("Please provide your shop name").min(3).max(100).label("Shop Name"),
@@ -47,7 +50,8 @@ const validationSchema = Yup.object().shape({
     // sections: Joi.array().required()
   });
 
-function CreateShop({ navigation }) {
+function CreateShop() {
+    const navigation = useNavigation();
     const auth = useAuth();
     const [uploadVisible, setUploadVisible] = useState(false);
     const [progress, setProgress] = useState(0);
@@ -156,12 +160,14 @@ useEffect(() => {
 
   return(
       <Screen>
+          <ScrollView>
         <UploadScreen
             onDone={() => setUploadVisible(false)}
             progress={progress}
             visible={uploadVisible}
         />
-        <Header/>
+        <Title style={{textAlign:'center'}}>SHOP DETAILS</Title>
+        {/* <Header/> */}
         {uploadVisible && progress < 1 && <Text style={{
             textAlign: 'center',
             color: 'darkgreen'
@@ -195,7 +201,7 @@ useEffect(() => {
                 size={24}
                 color="gray"
             />}
-            <View style={{width: '100%',height: '58%'}}>
+            <View style={{width: '92%',height: '58%',marginLeft:'7%'}}>
             <Form
                 initialValues={{
                     shopName: '',
@@ -217,11 +223,26 @@ useEffect(() => {
                     icon="shop"
                     name="shopName"
                     placeholder="Shop Name"
+                    width="90%"
                 />
+                <View style={{width: '90%',marginLeft: '2%'}}>
+                    <Text>Deals In</Text>
+                    <TouchableOpacity >
+                        <Picker
+                            items={sections}
+                            name="sections"
+                            numberOfColumns={3}
+                            PickerItemComponent={CategoryPickerItem}
+                            placeholder="Sections"
+                            
+                        />
+                    </TouchableOpacity>
+                </View>
                 <FormField
                     icon="card-bulleted-settings"
                     name="description"
                     placeholder="Description (optional)"
+                    width="90%"
                 />
                 <FormField
                     autoCapitalize="none"
@@ -229,11 +250,11 @@ useEffect(() => {
                     icon="home"
                     keyboardType="default"
                     name="streetName"
+                    width="90%"
                     placeholder={(address && address.streetName !== '') ? address.streetName : "Shop no. / Floor no. / Street name"}
                 />
                 <View style={{
-                    width: '100%',
-                    flexDirection: 'row'
+                    width: '100%'
                 }}>
                 <FormField
                     autoCapitalize="none"
@@ -241,31 +262,22 @@ useEffect(() => {
                     icon="map-marker"
                     keyboardType="number-pad"
                     name="pinCode"
-                    width="40%"
+                    width="90%"
                     placeholder="Area pin code"
                 />
-                <View style={{
-                    width: '50%',
-                    marginLeft: '5%'
-                }}>
-                <TouchableOpacity style={{}}>
-                <Picker
-                    items={sections}
-                    name="sections"
-                    numberOfColumns={3}
-                    PickerItemComponent={CategoryPickerItem}
-                    placeholder="Sections"
-                    width="100%"
-                    
-                />
-                </TouchableOpacity>
-                </View>
                 </View>
                 {/* {!locationError && <SubmitButton title="Create"/>} */}
-                <SubmitButton title="Create"/>
+                <View style={{alignSelf:'center',width:'75%'}}>
+                    <Button
+                        onPress={() => navigation.navigate(routes.NAVIGATIONAPP)}
+                        title="Continue"
+                        style={{ width: "75%"}}
+                    />
+                </View>
             </Form>
             </View>
       </View>
+      </ScrollView>
       </Screen>
   );
 }

@@ -194,6 +194,7 @@ function AddItem({ route, navigation }) {
       </View>
       </View>
   </Screen>
+
   );
 }
 

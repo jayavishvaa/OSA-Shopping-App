@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { Image, StyleSheet, View, TouchableOpacity, Alert, CheckBox } from 'react-native';
 import * as Yup from 'yup';
-// import { Checkbox } from 'react-native-paper';
+import { Title, RadioButton } from 'react-native-paper';
 
 import Screen from '../components/Screen';
 import {
@@ -11,32 +11,28 @@ import {
     SubmitButton,
 } from "../components/forms";
 import Button from '../components/Button';
+import UploadImage from '../components/UploadImage';
 
 import defaultStyles from '../config/styles';
 import Text from '../components/Text';
 import { ScrollView } from 'react-native-gesture-handler';
+import routes from '../navigation/routes';
+import { useNavigation} from '@react-navigation/native';
 
 const validationSchema = Yup.object().shape({
-    checked: Yup.string()
-        .required('Select Anyone')
+    accountName: Yup.string()
+        .required('Please enter Account Holder name')
+        .min(3).max(100)
+        .label('Account Holder Name'),
+    accountNumber: Yup.string()
+        .required('Please enter your Account number')
+        .length(10)
+        .label('Account Number')
 });
 
 function BankDetails() {
-    const [checked, setChecked] = useState(false);
-    const [checked1, setChecked1] = useState(false);
     const [checked2, setChecked2] = useState(false);
-
-    const setToggleCheckBox = () => {
-        setChecked(true);
-        setChecked1(false);
-        setChecked2(false);
-    }
-
-    const setToggleCheckBox1 = () => {
-        setChecked(false);
-        setChecked1(true);
-        setChecked2(false);
-    }
+    const navigation = useNavigation();
 
     const setToggleCheckBox2 = () => {
         setChecked(false);
@@ -46,43 +42,59 @@ function BankDetails() {
 
     return(
         <Screen style={styles.container}>
+            <Title style={{textAlign:'center'}}>BANK DETAILS</Title>
             <Form
-                initialValues={{checked:false}}
+                initialValues={{
+                    accountName: '',
+                    accountNumber: '',
+                }}
                 onSubmit={values => Alert.alert(JSON.stringify(values))}
                 validationSchema={validationSchema}
             >
                 <ScrollView>
+                    <View style={{marginLeft:'10%',marginRight:'5%',width:'75%'}}>
+                        <FormField
+                            autoCapitalize="none"
+                            autoCorrect={false}
+                            icon="account"
+                            keyboardType="default"
+                            name="accountName"
+                            placeholder="Account Holder's name"
+                        />
+                        <FormField
+                            autoCapitalize="none"
+                            autoCorrect={false}
+                            icon="phone"
+                            keyboardType="number-pad"
+                            name="phoneNumber"
+                            placeholder="Account Number"
+                        />
+                        <FormField
+                            autoCapitalize="none"
+                            autoCorrect={false}
+                            icon="account"
+                            keyboardType="default"
+                            name="checkedCheque"
+                            placeholder="Cancelled Cheque"
+                        />
+                    </View>
                     <View>
-                        <View style={{flexDirection:'row',alignItems:'center'}}>
-                            <CheckBox 
-                                value={checked}
-                                onValueChange={setToggleCheckBox}
-                                style={{marginRight:'2%'}}
-                            />
-                            <Text style={styles.checkBoxText}>I sell in GST exempted category</Text>
-                        </View>
-                        <View style={{flexDirection:'row',alignItems:'center'}}>
-                            <CheckBox 
-                                value={checked1}
-                                onValueChange={setToggleCheckBox1}
-                                style={{marginRight:'2%'}}
-                            />
-                            <Text style={styles.checkBoxText}>I have never registered for GST</Text>
-                        </View>
-                        <View style={{flexDirection:'row',alignItems:'center'}}>
-                            <CheckBox 
-                                value={checked2}
-                                onValueChange={setToggleCheckBox2}
-                                style={{marginRight:'2%'}}
+                        <View style={{flexDirection:'row',alignItems:'center',margin:'10%'}}>
+                            <RadioButton
+                                value="first"
+                                status={ checked2 === 'first' ? 'checked' : 'unchecked' }
+                                onPress={() => setChecked2('first')}
+                                color="orange"
                             />
                             <Text style={styles.checkBoxText}>I'll update it later</Text>
                         </View>
                         <View style={{justifyContent:"center",alignItems:"center"}}>
                             <Button
-                                // onPress={() => navigation.navigate(routes.REGISTER)}
+                                onPress={() => navigation.navigate(routes.CREATESHOP)}
                                 title="Continue"
                                 style={{ width: "75%"}}
                             />
+                            {/* <SubmitButton title="Continue"/> */}
                         </View>
                     </View>
 

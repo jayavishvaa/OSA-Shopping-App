@@ -11,7 +11,7 @@ import routes from '../navigation/routes';
 function NoItem({ route, navigation }) {
   return(
       <Screen>
-          <Header/>
+          {/* <Header/> */}
           <View style={styles.container}>
             {/* <FontAwesome5 name="box-open" size={120} color="rgba(0,0,0,0.5)" /> */}
             <Image
@@ -23,9 +23,10 @@ function NoItem({ route, navigation }) {
                 textAlign: 'center',
                 marginVertical: 4
             }}>You have not created any item here, create it here</Text>
-            <Button title="Create items" onPress={() => navigation.navigate(routes.ADDITEM, {
+            {/* <Button title="Create items" onPress={() => navigation.navigate(routes.ADDITEM, {
                 categoryName: route.params.categoryName
-            })}/>
+            })}/> */}
+             <Button title="Create items" onPress={() => navigation.navigate(routes.ADDITEM)}/>
           </View>
       </Screen>
   );

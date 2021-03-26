@@ -87,6 +87,9 @@ function Login() {
                 }
             </Form>
             </View>
+            <View>
+                <Text></Text>
+            </View>
         </Screen>
     )
 }

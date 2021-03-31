@@ -42,7 +42,11 @@ function BankDetails() {
 
     return(
         <Screen style={styles.container}>
-            <Title style={{textAlign:'center'}}>BANK DETAILS</Title>
+            <Title style={{
+                    marginLeft:'10%',
+                    borderBottomColor:'#2ccce4',
+                    borderBottomWidth:1.5,
+                    width:'36%'}}>BANK DETAILS</Title>
             <Form
                 initialValues={{
                     accountName: '',
@@ -52,11 +56,10 @@ function BankDetails() {
                 validationSchema={validationSchema}
             >
                 <ScrollView>
-                    <View style={{marginLeft:'10%',marginRight:'5%',width:'75%'}}>
+                    <View style={{marginLeft:'12%',marginRight:'5%',width:'75%'}}>
                         <FormField
                             autoCapitalize="none"
                             autoCorrect={false}
-                            icon="account"
                             keyboardType="default"
                             name="accountName"
                             placeholder="Account Holder's name"
@@ -64,7 +67,6 @@ function BankDetails() {
                         <FormField
                             autoCapitalize="none"
                             autoCorrect={false}
-                            icon="phone"
                             keyboardType="number-pad"
                             name="phoneNumber"
                             placeholder="Account Number"
@@ -72,14 +74,13 @@ function BankDetails() {
                         <FormField
                             autoCapitalize="none"
                             autoCorrect={false}
-                            icon="account"
                             keyboardType="default"
                             name="checkedCheque"
                             placeholder="Cancelled Cheque"
                         />
                     </View>
                     <View>
-                        <View style={{flexDirection:'row',alignItems:'center',margin:'10%'}}>
+                        <View style={{flexDirection:'row',alignItems:'center',marginTop:'5%',marginLeft:'12%',marginBottom:'5%'}}>
                             <RadioButton
                                 value="first"
                                 status={ checked2 === 'first' ? 'checked' : 'unchecked' }
@@ -92,7 +93,7 @@ function BankDetails() {
                             <Button
                                 onPress={() => navigation.navigate(routes.CREATESHOP)}
                                 title="Continue"
-                                style={{ width: "75%"}}
+                                style={{ width: "50%",borderRadius:25}}
                             />
                             {/* <SubmitButton title="Continue"/> */}
                         </View>

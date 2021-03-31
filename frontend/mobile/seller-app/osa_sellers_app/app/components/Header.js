@@ -1,6 +1,6 @@
 import  React, {useState} from 'react';
 import { StyleSheet, View, TouchableOpacity } from 'react-native';
-import { Entypo, MaterialIcons } from '@expo/vector-icons';
+import { Entypo, MaterialIcons,SimpleLineIcons  } from '@expo/vector-icons';
 import Text from './Text';
 import defaultStyles from '../config/styles';
 import {Appbar} from 'react-native-paper';
@@ -12,13 +12,13 @@ import { useNavigation} from '@react-navigation/native';
 function Header() {
   const navigation = useNavigation();
   return(
-        <Appbar.Header style={{justifyContent:'center',alignItems:'center',height:'7%',backgroundColor:'#d2691e'}}>
+        <Appbar.Header style={{justifyContent:'center',alignItems:'center',height:'7%',backgroundColor:'#2ccce4'}}>
           <TouchableOpacity style={{marginLeft:'2%',display:'flex',flexDirection:'row'}} onPress={() => navigation.navigate(routes.HOME)} >
-            <Entypo name="home" size={24} color="white" />
+            <SimpleLineIcons name="home" size={24} color="black" />
           </TouchableOpacity>
-          <Appbar.Content title="OSA APP" color="white" subtitle="Seller page" style={{justifyContent:'center',alignItems:'center',marginTop:'8%',marginRight:'6%'}} />
+          <Appbar.Content title="OneStopApp" color="black"  style={{justifyContent:'center',alignItems:'center',marginTop:'4%',marginRight:'6%'}} />
           <TouchableOpacity  onPress={() => navigation.openDrawer()}>
-            <Entypo name="menu" size={30} color="white" />
+            <Entypo name="menu" size={30} color="black" />
           </TouchableOpacity>
         </Appbar.Header>
   );

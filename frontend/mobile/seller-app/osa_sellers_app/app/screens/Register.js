@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { Image, ScrollView, StyleSheet, View, Alert, RefreshControl } from 'react-native';
 import * as Yup from 'yup';
 import * as Location from "expo-location";
-
+import { Title } from 'react-native-paper';
 import Screen from '../components/Screen';
 import defaultStyles from '../config/styles';
 import Text from '../components/Text';
@@ -47,40 +47,40 @@ function Register({navigation}) {
     const [error, setError] = useState(false);
     const [locationError, setLocationError] = useState(false);
 
-    const getLocation = async () => {
-        try {
-            const gpsServiceStatus = await Location.hasServicesEnabledAsync();
-            if (gpsServiceStatus) {
-                const { status } = await Location.requestPermissionsAsync();
-                if (status !== 'granted') return setLocationError(true);
-                setLocationError(false);
-                setAcquiringLocation(true);
-                const location = await Location.getCurrentPositionAsync();
-                const result = await locationApi.location({
-                    latitude: location.coords.latitude,
-                    longitude: location.coords.longitude
-                });
-                if (!result.ok) return setLocationError(true);
-                setLocationError(false);
-                setAddress(result.data[0]);
-                setAcquiringLocation(false);
-            } else {
-                console.log("access to location not granted");
-                setLocationError(true);
-            }
-          } catch (error) {
-            console.log(error);
-          }
-    }
+    // const getLocation = async () => {
+    //     try {
+    //         const gpsServiceStatus = await Location.hasServicesEnabledAsync();
+    //         if (gpsServiceStatus) {
+    //             const { status } = await Location.requestPermissionsAsync();
+    //             if (status !== 'granted') return setLocationError(true);
+    //             setLocationError(false);
+    //             setAcquiringLocation(true);
+    //             const location = await Location.getCurrentPositionAsync();
+    //             const result = await locationApi.location({
+    //                 latitude: location.coords.latitude,
+    //                 longitude: location.coords.longitude
+    //             });
+    //             if (!result.ok) return setLocationError(true);
+    //             setLocationError(false);
+    //             setAddress(result.data[0]);
+    //             setAcquiringLocation(false);
+    //         } else {
+    //             console.log("access to location not granted");
+    //             setLocationError(true);
+    //         }
+    //       } catch (error) {
+    //         console.log(error);
+    //       }
+    // }
     const onRefresh = () => {
         setRefreshing(true);
-        getLocation();
+        // getLocation();
         setRefreshing(false);
     }
 
-    useEffect(() => {
-        getLocation();
-      }, []);
+    // useEffect(() => {
+    //     getLocation();
+    //   }, []);
 
     const handleSubmit = async formData => {
         const user = auth.user;
@@ -94,11 +94,11 @@ function Register({navigation}) {
   return(
     <Screen>
         <View style={styles.container}>
-            {acquiringLocation && <Text style={{
+            {/* {acquiringLocation && <Text style={{
                 textAlign: 'center',
                 color: 'rgba(0,0,0,0.5)'
             }}>Acquiring location...</Text>}
-            {locationError && <Text style={styles.locationError}>Couldn't retrieve your Location, make sure you have given required permissions or your device location is active</Text>}
+            {locationError && <Text style={styles.locationError}>Couldn't retrieve your Location, make sure you have given required permissions or your device location is active</Text>} */}
             <ScrollView
                 showsVerticalScrollIndicator={false}
                 refreshControl={
@@ -108,8 +108,8 @@ function Register({navigation}) {
                     />
                 }
             >
-                <Image style={styles.sellerImage} source={require('../assets/sellerDetailsIcon.png')}/>
-                <Text style={styles.personalDetailsText}>Enter your personal details</Text>
+                {/* <Image style={styles.sellerImage} source={require('../assets/sellerDetailsIcon.png')}/> */}
+                <Title style={styles.personalDetailsText}>PERSONAL</Title>
                 <Form
                     initialValues={{
                         fullName: '',
@@ -121,12 +121,14 @@ function Register({navigation}) {
                     validationSchema={validationSchema}
                 >
                     <ErrorMessage error="Something went wrong" visible={error}/>
+                    <View style={{marginLeft:'10%'}}>
                     <FormField
                         autoCapitalize="none"
                         autoCorrect={false}
                         icon="account"
                         keyboardType="default"
                         name="fullName"
+                        width="90%"
                         placeholder="Your full name"
                     />
                     <FormField
@@ -135,6 +137,7 @@ function Register({navigation}) {
                         icon="email"
                         keyboardType="default"
                         name="email"
+                        width="90%"
                         placeholder="Your Email"
                     />
                     <FormField
@@ -144,6 +147,7 @@ function Register({navigation}) {
                         keyboardType="default"
                         name="address"
                         name="homeAddress"
+                        width="90%"
                         placeholder="Flat no. / House no. / Street Name"
                     />
                     <FormField
@@ -152,7 +156,7 @@ function Register({navigation}) {
                         icon="map-marker"
                         keyboardType="number-pad"
                         name="pinCode"
-                        width="50%"
+                        width="90%"
                         placeholder="Area pin code"
                     />
                     <FormField
@@ -161,10 +165,11 @@ function Register({navigation}) {
                         icon="home-city"
                         keyboardType="default"
                         name="city"
-                        width="50%"
+                        width="90%"
                         placeholder="City"
                     />
-                    <SubmitButton title="Register" onPress={() => navigation.navigate(routes.BUSSINESSDETAILS)}/>
+                    </View>
+                    <SubmitButton title="Register" onPress={() => navigation.navigate(routes.BUSSINESSDETAILS)} style={{width:'40%',borderRadius:25,backgroundColour:'#2ccce4',alignSelf:'center'}}/>
                 </Form>
                 <Text>{`\n \n \n \n \n \n \n `}</Text>
             </ScrollView>
@@ -182,8 +187,10 @@ const styles = StyleSheet.create({
     color: 'rgba(255,0,0,0.4)'
   },
   personalDetailsText: {
-    color: 'rgba(0, 100, 0, 0.8)',
-    alignSelf: 'center',
+    marginLeft:'10%',
+    borderBottomColor:'#2ccce4',
+    borderBottomWidth:1.5,
+    width:'28%'
   },
   registerText: {
       color: defaultStyles.colors.medium,
@@ -193,7 +200,8 @@ const styles = StyleSheet.create({
   sellerImage: {
       width: "100%",
       resizeMode: 'contain',
-      height: 200
+      height: 200,
+
   }
 });
 

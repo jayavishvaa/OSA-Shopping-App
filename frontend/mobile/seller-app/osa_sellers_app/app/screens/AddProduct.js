@@ -18,32 +18,7 @@ import * as Yup from 'yup';
 import { TouchableOpacity } from 'react-native-gesture-handler';
 
 
-const ProductTab = createMaterialTopTabNavigator();
 
-const TopTab = () => {
-  return (
-    <ProductTab.Navigator
-      initialRouteName={"Add"}
-      tabBarOptions={{
-        activeTintColor: '#e91e63',
-        labelStyle: { fontSize: 12 },
-        tabStyle: { width:100},
-        style: { backgroundColor: 'powderblue' },
-      }}
-    >
-      <ProductTab.Screen
-        name={"Add"}
-        component={Add}
-        options={{ tabBarLabel:'Add'}}
-      />
-      <ProductTab.Screen
-        name={"List"}
-        component={List}
-        options={{ tabBarLabel:'List'}}
-      />
-    </ProductTab.Navigator>
-  )
-}
 
 const validationSchema = Yup.object().shape({
   MRP: Yup.number().min(0).required("Please provide the MRP").label("MRP"),
@@ -70,7 +45,6 @@ export default function AddProduct() {
         <Screen>
           <Header/>
             <View>
-                <Title style={{textAlign:'center'}}>Add Product</Title>
                 <View style={{flexDirection:'row',marginTop:'5%'}}>
                     <Button mode="outlined" style={{width:'50%'}} onPress={AddPage}>ADD</Button>
                     <Button mode="outlined" style={{width:'50%'}} onPress={ListPage}>List</Button>
@@ -96,8 +70,8 @@ export default function AddProduct() {
                     validationSchema={validationSchema}
                   >
                     <ErrorMessage error="Something went wrong" visible={error}/>
-                    <View style={{flexDirection:'row'}}>
-                      <View style={{flex:1,marginLeft:'7%'}}>
+                    <View style={{flexDirection:'row',marginTop:'5%'}}>
+                      <View style={{flex:1,marginLeft:'10%'}}>
                         <FormField
                             autoCapitalize="none"
                             autoCorrect={false}
@@ -120,7 +94,7 @@ export default function AddProduct() {
                         />
                       </View>
                     </View>
-                    <Text style={{marginLeft:'7%',fontSize:17,color:'grey',marginTop:'4%',marginBottom:'4%'}}>Discounts 20% Applied</Text>
+                    <Text style={{marginLeft:'10%',fontSize:17,color:'grey',marginTop:'4%',marginBottom:'4%'}}>Discounts 20% Applied</Text>
                     <View style={{alignItems:'center'}}>
                       <SubmitButton title="Add" style={{width:'40%',borderRadius:25}}/>
                     </View>

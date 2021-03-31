@@ -35,9 +35,16 @@ function BussinessDetails({navigation}) {
     }
     return(
         <Screen style={styles.container}>
+            <Title style={{
+                    textAlign:'center',
+                    marginBottom:'2%',
+                    marginLeft:'10%',
+                    borderBottomColor:'#2ccce4',
+                    borderBottomWidth:1.5,
+                    width:'45%'}}>BUSINESS DETAILS</Title>
+            <ScrollView>
             <View>
-                <Title style={{textAlign:'center',marginBottom:'2%'}}>BUSINESS DETAILS</Title>
-                <View style={{flexDirection:'row',alignItems:'center',marginLeft:'5%'}}>
+                <View style={{flexDirection:'row',alignItems:'center',marginLeft:'15%'}}>
                     <RadioButton
                         value="first"
                         status={ checked === 'first' ? 'checked' : 'unchecked' }
@@ -46,7 +53,7 @@ function BussinessDetails({navigation}) {
                     />
                     <Text style={styles.checkBoxText}>I have GSTIN</Text>
                 </View>
-                <View style={{marginLeft:'5%',marginRight:'5%'}}>
+                <View style={{marginLeft:'15%',marginRight:'5%'}}>
                     {Gstin && 
                         <Form
                             initialValues={{
@@ -65,7 +72,7 @@ function BussinessDetails({navigation}) {
                                 />
                             </View>
                             <View style={{width:'50%',marginLeft:'10%',borderRadius:'10%'}}>
-                                <SubmitButton title="Verify" />
+                                <SubmitButton title="Verify" style={{borderRadius:25}}/>
                             </View>
                         </Form>
                     }
@@ -80,7 +87,7 @@ function BussinessDetails({navigation}) {
                 validationSchema={validationSchema}
             >
                 <ScrollView>
-                    <View style={{margin:'5%'}}>
+                    <View style={{margin:'15%'}}>
                         <View style={{flexDirection:'row',alignItems:'center'}}>
                             <RadioButton
                                 value="second"
@@ -112,13 +119,14 @@ function BussinessDetails({navigation}) {
                             <Button
                                 onPress={() => navigation.navigate(routes.BANKDETAILS)}
                                 title="Continue"
-                                style={{ width: "75%"}}
+                                style={{ width: "75%",borderRadius:25}}
                             />
                         </View>
                     </View>
 
                 </ScrollView>
             </Form>
+            </ScrollView>
         </Screen>
     )
 }

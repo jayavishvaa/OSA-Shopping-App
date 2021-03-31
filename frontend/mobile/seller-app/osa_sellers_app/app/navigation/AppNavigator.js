@@ -28,10 +28,10 @@ const App = () => {
   return (
       <Tab.Navigator
         initialRouteName={routes.SHOPNAVIGATOR}
-        activeColor="#ffff00"
+        activeColor="black"
         inactiveColor="#fff"
         labeled={true}
-        barStyle={{ backgroundColor:'#d2691e',borderTopColor:'transparent'}}
+        barStyle={{ backgroundColor:'#2ccce4',borderTopColor:'transparent'}}
         // sceneAnimationEnabled={true}
         // screenOptions={({ route }) => ({
         //   tabBarIcon: ({ focused, color, size }) => {

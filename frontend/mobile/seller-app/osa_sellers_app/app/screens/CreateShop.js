@@ -61,40 +61,40 @@ function CreateShop() {
     const [locationCoords, setLocationCoords] = useState();
     const [locationError, setLocationError] = useState(false);
 
-const getLocation = async () => {
-    try {
-        const gpsServiceStatus = await Location.hasServicesEnabledAsync();
-        if (gpsServiceStatus) {
-            const { status } = await Location.requestPermissionsAsync();
-            if (status !== 'granted') return setLocationError(true);
-            setLocationError(false);
-            setAcquiringLocation(true);
-            const location = await Location.getCurrentPositionAsync();
-            setLocationCoords({
-                latitude: location.coords.latitude,
-                longitude: location.coords.longitude
-            })
-            const result = await locationApi.location(locationCoords);
-            if (!result.ok) {
-                setLocationError(true);
-                setAcquiringLocation(false);
-                return;
-            }
-            setLocationError(false);
-            setAddress(result.data[0]);
-            setAcquiringLocation(false);
-            setLocationEnable(true);
-        } else {
-            setLocationEnable(false);
-        }
-      } catch (error) {
-        console.log(error);
-      }
-}
+// const getLocation = async () => {
+//     try {
+//         const gpsServiceStatus = await Location.hasServicesEnabledAsync();
+//         if (gpsServiceStatus) {
+//             const { status } = await Location.requestPermissionsAsync();
+//             if (status !== 'granted') return setLocationError(true);
+//             setLocationError(false);
+//             setAcquiringLocation(true);
+//             const location = await Location.getCurrentPositionAsync();
+//             setLocationCoords({
+//                 latitude: location.coords.latitude,
+//                 longitude: location.coords.longitude
+//             })
+//             const result = await locationApi.location(locationCoords);
+//             if (!result.ok) {
+//                 setLocationError(true);
+//                 setAcquiringLocation(false);
+//                 return;
+//             }
+//             setLocationError(false);
+//             setAddress(result.data[0]);
+//             setAcquiringLocation(false);
+//             setLocationEnable(true);
+//         } else {
+//             setLocationEnable(false);
+//         }
+//       } catch (error) {
+//         console.log(error);
+//       }
+// }
 
-useEffect(() => {
-    getLocation();
-  }, []);
+// useEffect(() => {
+//     getLocation();
+//   }, []);
 
   const handleSubmit = async shopData => {
     setUploadVisible(true);
@@ -166,7 +166,11 @@ useEffect(() => {
             progress={progress}
             visible={uploadVisible}
         />
-        <Title style={{textAlign:'center'}}>SHOP DETAILS</Title>
+        <Title style={{
+                    marginLeft:'10%',
+                    borderBottomColor:'#2ccce4',
+                    borderBottomWidth:1.5,
+                    width:'75%'}}>SHOP DETAILS</Title>
         {/* <Header/> */}
         {uploadVisible && progress < 1 && <Text style={{
             textAlign: 'center',
@@ -177,7 +181,7 @@ useEffect(() => {
             color: 'darkgreen'
         }}>Uploaded successfully...</Text>}
         <View style={styles.container}>
-            {acquiringLocation && <Text style={{
+            {/* {acquiringLocation && <Text style={{
                 textAlign: 'center',
                 color: 'rgba(0,0,0,0.5)'
             }}>Acquiring Location...</Text>}
@@ -200,7 +204,7 @@ useEffect(() => {
                 onPress={getLocation}
                 size={24}
                 color="gray"
-            />}
+            />} */}
             <View style={{width: '92%',height: '58%',marginLeft:'7%'}}>
             <Form
                 initialValues={{
@@ -271,7 +275,7 @@ useEffect(() => {
                     <Button
                         onPress={() => navigation.navigate(routes.NAVIGATIONAPP)}
                         title="Continue"
-                        style={{ width: "75%"}}
+                        style={{ width: "75%",borderRadius:25,alignSelf:'center'}}
                     />
                 </View>
             </Form>

@@ -13,6 +13,7 @@ import routes from './routes';
 import MyOrders from '../screens/MyOrders';
 import AddProduct from '../screens/AddProduct';
 import Home from '../screens/Home';
+import NewOrders from '../screens/newOrders';
 
 const Stack = createStackNavigator();
 
@@ -22,6 +23,7 @@ const ShopNavigator = () => (
     <Stack.Screen name={routes.HOME} component={Home} />
     <Stack.Screen name={routes.ADDPRODUCT} component={AddProduct} />
     <Stack.Screen name={routes.MYSHOP} component={MyShop} />
+    <Stack.Screen name={routes.NEWORDERS} component={NewOrders} />
     <Stack.Screen name={routes.NOSHOP} component={NoShop} />
     <Stack.Screen name={routes.NOCATEGORIES} component={NoCategories} />
     <Stack.Screen name={routes.ADDCATEGORY} component={AddCategory} />

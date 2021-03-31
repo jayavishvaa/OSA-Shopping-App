@@ -18,11 +18,11 @@ const AccountNavigator = () => (
   <Stack.Navigator
     screenOptions={{
       headerStyle: {
-        backgroundColor: 'orange'
+        backgroundColor: '#2ccce4'
       },
-      headerTintColor: '#fff',
+      headerTintColor: 'black',
       headerTitleStyle: {
-        fontWeight: 'bold',
+        marginLeft:'24%'
       },
       title:'OneStopApp'
     }}

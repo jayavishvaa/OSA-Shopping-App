@@ -16,6 +16,7 @@ export default Object.freeze({
     MYORDERS: "MyOrders",
     MYSHOP: "MyShop",
     NAVIGATIONAPP:"NavigationApp",
+    NEWORDERS:"NewOrders",
     NEWSHOPNAVIGATOR: "NewShopNavigator",
     NOCATEGORIES: "NoCategories",
     NOITEMS: "NoItems",
